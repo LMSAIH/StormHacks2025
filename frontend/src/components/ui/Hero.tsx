@@ -58,22 +58,22 @@ const Hero = () => {
           <div className="relative flex flex-col items-center text-center space-y-6">
             {/* Badge or Tag */}
             <div className="inline-flex items-center rounded-full border border-white/30 bg-background/20 px-4 py-1.5 backdrop-blur-sm shadow-[0_10px_30px_rgba(8,12,34,0.4)]">
-              <P className="text-xs font-medium text-white/80 drop-shadow-[0_6px_18px_rgba(7,12,32,0.55)] sm:text-sm">
+              <P className="text-xs font-medium text-white/80 drop-shadow-[0_6px_18px_rgba(7,12,32,0.55)] sm:text-sm hover:cursor-default">
                 Powered by Public Data
               </P>
             </div>
 
             {/* Main Heading */}
-            <H1 className="leading-tight text-white drop-shadow-[0_18px_40px_rgba(15,23,42,0.6)]">
+            <H1 className="leading-tight text-white drop-shadow-[0_18px_40px_rgba(15,23,42,0.6)] hover:cursor-default">
               Understand how
               <br />
-              <span className="text-sky-200 drop-shadow-[0_12px_32px_rgba(15,23,42,0.65)]">
+              <span className="text-sky-200 drop-shadow-[0_12px_32px_rgba(15,23,42,0.65)] hover:cursor-default">
                 building projects <span className="text-[#1976D2]">impact</span> communities
               </span>
             </H1>
 
             {/* Lead Paragraph */}
-            <Lead className="mx-auto max-w-xl text-white/85 drop-shadow-[0_12px_28px_rgba(10,16,38,0.6)]">
+            <Lead className="mx-auto max-w-xl text-white/85 drop-shadow-[0_12px_28px_rgba(10,16,38,0.6)] hover:cursor-default">
               We analyze public data to reveal the real impact of building projects on neighborhoods and communities.
             </Lead>
 

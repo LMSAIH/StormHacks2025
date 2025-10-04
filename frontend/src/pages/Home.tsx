@@ -1,6 +1,7 @@
 import { Hero } from "../components/ui/Hero";
 import Impact from "../components/ui/Impact";
 import { Navbar } from "../components/ui/Navbar";
+import Solutions from "../components/ui/Solutions";
 
 
 const Home = () => {
@@ -16,6 +17,7 @@ const Home = () => {
             <div className="relative z-10 flex min-h-screen flex-col">
                 <Navbar />
                 <Hero />
+                <Solutions  />
                 <Impact />
             </div>
         </div>
