@@ -4,15 +4,15 @@ import { Button } from "./button"
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background group">
+    <section className="relative min-h-screen w-full overflow-hidden bg-background">
       {/* Single Beautiful Dotted Map with Global Markers */}
-      <div className="absolute inset-0 transition-all duration-700 group-hover:opacity-100 opacity-100">
+      <div className="absolute inset-0 transition-all duration-700 hover:opacity-100 opacity-100">
         <DottedMap
           width={280}
           height={140}
           mapSamples={8000}
           dotRadius={0.50}
-          className="text-foreground/30 group-hover:text-foreground/60 transition-all duration-700"
+          className="text-foreground/30 transition-all duration-700"
           markers={[
             // Vancouver (Home - Featured)
             { lat: 49.2827, lng: -123.1207, size: 2 },
@@ -53,12 +53,12 @@ const Hero = () => {
       </div>
 
       {/* Gradient Overlays for depth - Enhanced */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/60 to-background transition-all duration-700 group-hover:from-background/80 group-hover:via-background/40" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/8 transition-all duration-700 group-hover:from-primary/15 group-hover:to-accent/15" />
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/40 to-transparent transition-all duration-700 group-hover:via-background/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/60 to-background transition-all duration-700" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/8 transition-all duration-700" />
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/40 to-transparent transition-all duration-700" />
       
       {/* Radial gradient for spotlight effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background))_100%)] transition-all duration-700 group-hover:bg-[radial-gradient(ellipse_at_center,transparent_30%,hsl(var(--background))_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background))_100%)] transition-all duration-700" />
 
       {/* Content Container */}
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
