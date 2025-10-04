@@ -1,18 +1,23 @@
-import { DottedMap } from "./dotted-map"
+import { lazy, Suspense } from "react"
 import { H1, Lead, P } from "./typography"
 import { Button } from "./button"
+
+// Lazy load the DottedMap component
+const DottedMap = lazy(() => import("./dotted-map").then(module => ({ default: module.DottedMap })))
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-background group">
       {/* Single Beautiful Dotted Map with Global Markers */}
-      <div className="absolute inset-0 transition-all duration-700 group-hover:opacity-100 opacity-100">
-        <DottedMap
-          width={280}
-          height={140}
-          mapSamples={8000}
-          dotRadius={0.50}
-          className="text-foreground/30 group-hover:text-foreground/60 transition-all duration-700"
+      <div className="absolute inset-0">
+        <Suspense fallback={<div className="absolute inset-0" />}>
+          <div className="animate-fade-in-dots">
+            <DottedMap
+              width={280}
+              height={140}
+              mapSamples={3000}
+              dotRadius={0.40}
+              className="text-foreground/30 group-hover:text-foreground/60 transition-colors duration-700"
           markers={[
             // Vancouver (Home - Featured)
             { lat: 49.2827, lng: -123.1207, size: 2 },
@@ -50,6 +55,8 @@ const Hero = () => {
           ]}
           markerColor="#64B5F6"
         />
+          </div>
+        </Suspense>
       </div>
 
       {/* Gradient Overlays for depth - Enhanced */}
