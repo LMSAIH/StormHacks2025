@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { Hero } from "../components/ui/Hero";
+import { Navbar } from "../components/ui/Navbar";
+
 
 const Home = () => {
 
     return (
         <div>
-            <Button>Hello </Button>
-            <h1>Home Page</h1>
+            <Navbar />
+            <Hero />    
+
         </div>
     )
 }
