@@ -4,7 +4,10 @@ import { Button } from "./button"
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
+    <section
+      id="platform"
+      className="relative min-h-screen w-full overflow-hidden scroll-mt-28 lg:scroll-mt-36"
+    >
       {/* Single Beautiful Dotted Map with Global Markers */}
       <div className="pointer-events-none absolute inset-0 opacity-100 transition-all duration-700">
         <DottedMap

@@ -2,6 +2,7 @@ import { Hero } from "../components/ui/Hero";
 import Impact from "../components/ui/Impact";
 import { Navbar } from "../components/ui/Navbar";
 import Solutions from "../components/ui/Solutions";
+import Footer from "../components/ui/Footer";
 
 
 const Home = () => {
@@ -19,6 +20,7 @@ const Home = () => {
                 <Hero />
                 <Solutions  />
                 <Impact />
+                <Footer />
             </div>
         </div>
     )

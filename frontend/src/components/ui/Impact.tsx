@@ -4,7 +4,7 @@ import React from 'react';
 
 const Impact: React.FC = () => {
   return (
-    <section className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 py-24">
+  <section id="impact" className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 py-24 scroll-mt-28 lg:scroll-mt-36">
       <div className="max-w-3xl text-center space-y-6">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Measure meaningful impact</h2>
         <p className="text-base text-muted-foreground sm:text-lg">
