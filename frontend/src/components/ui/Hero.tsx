@@ -94,10 +94,8 @@ const Hero = () => {
               size="lg"
               className="group relative overflow-hidden rounded-full bg-white px-8 py-6 text-base font-semibold text-primary-foreground transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_30px_70px_-28px_rgba(100,181,246,0.85)]"
             >
-              <a href="/Visualization">
               <span className="relative z-10 tracking-wide">Start Analyzing</span>
               <div className="absolute inset-[-60%] -z-10 rotate-12 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </a>
             </Button>
             
             <Button
@@ -105,7 +103,7 @@ const Hero = () => {
               variant="outline"
               className="border-2 rounded-full bg-background/50 px-8 py-6 text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
             >
-              <a href="#impact">Learn More</a>
+              Learn More
             </Button>
           </div>
 
