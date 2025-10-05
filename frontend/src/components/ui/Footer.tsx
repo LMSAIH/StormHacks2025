@@ -2,9 +2,9 @@ import React from 'react';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-black opacity-40 text-white py-6 mt-auto">
+        <footer className="relative bg-background/80 backdrop-blur-sm border-t border-border text-foreground py-6 mt-auto">
             <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row justify-between items-center opacity-100">
+                <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="justify-start">
                         <p className="text-sm">
                             &copy; {new Date().getFullYear()} All rights reserved.
@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
                     <a href="#platform" className="text-sm hover:text-gray-300 transition-all">
                         Platform
                     </a>
-                    <a href="#solution" className="text-sm hover:text-gray-300 transition-all">
+                    <a href="#solutions" className="text-sm hover:text-gray-300 transition-all">
                         Solution
                     </a>
                     <a href="#impact" className="text-sm hover:text-gray-300 transition-all">
