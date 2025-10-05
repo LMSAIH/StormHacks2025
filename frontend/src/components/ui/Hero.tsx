@@ -27,7 +27,7 @@ const Hero = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_100%)] transition-all duration-700 group-hover:bg-[radial-gradient(ellipse_at_center,transparent_30%,transparent_100%)]" />
 
       {/* Content Container */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-20 sm:px-6 lg:px-8">
         <div className="mx-auto text-center max-w-3xl">
           {/* Badge or Tag */}
           <div className="mb-6 inline-flex items-center rounded-full border border-border bg-muted/50 px-4 py-1.5 backdrop-blur-sm">
