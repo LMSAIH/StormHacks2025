@@ -4,16 +4,16 @@ import mapboxgl, { Map as MapboxMap } from 'mapbox-gl';
 import { getAmenities, getDevelopmentPermits } from '@/api/requests';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as turf from '@turf/turf';
-import { 
-  FaTree, 
-  FaPalette, 
-  FaBuilding, 
-  FaBook, 
-  FaTheaterMasks, 
-  FaRestroom, 
-  FaTrain, 
-  FaSchool, 
-  FaFireExtinguisher 
+import {
+  FaTree,
+  FaPalette,
+  FaBuilding,
+  FaBook,
+  FaTheaterMasks,
+  FaRestroom,
+  FaTrain,
+  FaSchool,
+  FaFireExtinguisher
 } from 'react-icons/fa';
 
 import CustomMarker from './CustomMarker';
@@ -22,16 +22,26 @@ import AmenityModal from './AmenityModal';
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 type MapProps = {
-  setCurrentDevelopment: (dev: any) => void;
-  setCurrentDevelopmentCoordinates: (coords: [number, number] | null) => void;
-  currentDevelopmentCoordinates?: [number, number] | null;
+  onPermitsLoad?: (permits: any[]) => void;
+  onPermitSelect?: (permit: any) => void;
+  selectedPermitId?: string | null;
 };
 
-const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentCoordinates, currentDevelopmentCoordinates }) => {
+const Map: React.FC<MapProps> = ({
+  onPermitsLoad,
+  onPermitSelect,
+  selectedPermitId: externalSelectedPermitId
+}) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [permits, setPermits] = React.useState<any[]>([]);
-  const [selectedPermitId, setSelectedPermitId] = React.useState<string | null>(null);
-  const [amenities, setAmenities] = React.useState<any>(null);
+  const [internalSelectedPermitId, setInternalSelectedPermitId] = React.useState<string | null>(null);
+  const selectedPermitId = externalSelectedPermitId !== undefined ? externalSelectedPermitId : internalSelectedPermitId;
+  const [visibleInfoCardId, setVisibleInfoCardId] = React.useState<string | null>(null);
+  
+  // Derive coordinates from selected permit
+  const selectedPermit = permits.find(p => p._id === selectedPermitId);
+  const currentDevelopmentCoordinates = selectedPermit?.geom?.geometry?.coordinates || null;
+  
   const [selectedAmenity, setSelectedAmenity] = React.useState<any>(null);
   const [showAmenityModal, setShowAmenityModal] = React.useState(false);
   const amenityMarkersRef = useRef<mapboxgl.Marker[]>([]);
@@ -50,12 +60,11 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
 
   const fetchAmenitiesAroundDevelopment = async (coordinates: [number, number]) => {
     try {
-      const response = await getAmenities({ 
-        lon: coordinates[0], 
-        lat: coordinates[1], 
+      const response = await getAmenities({
+        lon: coordinates[0],
+        lat: coordinates[1],
         distance: 0.5 // 500m radius
       });
-      setAmenities(response);
       displayAmenityMarkers(response);
     } catch (error) {
       console.error('Error fetching amenities:', error);
@@ -83,13 +92,13 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
           // Create a container for the React icon
           const amenityEl = document.createElement('div');
           amenityEl.className = 'amenity-marker';
-          
+
           // Render the React icon into the container
           const root = createRoot(amenityEl);
           const IconComponent = getAmenityIcon(type);
-          
+
           root.render(
-            <div 
+            <div
               className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-lg border-2 border-gray-200 hover:scale-110 transition-transform cursor-pointer hover:shadow-xl"
               title={getAmenityName(amenity, type)}
               style={{ color: getAmenityColor(type) }}
@@ -152,7 +161,9 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
 
   const getPermits = async () => {
     const response = await getDevelopmentPermits({ lon: -123.15525, lat: 49.249783, distance: 18 });
-    setPermits(response.permits || []);
+    const permitsData = response.permits || [];
+    setPermits(permitsData);
+    onPermitsLoad?.(permitsData);
   };
 
   useEffect(() => {
@@ -234,25 +245,39 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
       root.render(
         <CustomMarker
           permit={permit}
-          setCurrentDevelopment={setCurrentDevelopment}
-          setCurrentDevelopmentCoordinates={setCurrentDevelopmentCoordinates}
-          isSelected={selectedPermitId === permit._id}
+          isSelected={visibleInfoCardId === permit._id}
           onSelect={(permitId) => {
-            const newSelectedId = permitId === selectedPermitId ? null : permitId;
-            const previousSelectedId = selectedPermitId;
-            setSelectedPermitId(newSelectedId);
+            const isCurrentlyVisible = visibleInfoCardId === permitId;
             
-            if (newSelectedId && newSelectedId !== previousSelectedId) {
-              // Switching to a different development - clear previous amenities
-              if (previousSelectedId) {
-                clearAmenityMarkers();
+            if (isCurrentlyVisible) {
+              // Clicking to close info card - just hide the card, keep selection
+              setVisibleInfoCardId(null);
+            } else {
+              // Clicking to show info card and select permit
+              setVisibleInfoCardId(permitId);
+              
+              // Update selection if this is a new permit
+              if (selectedPermitId !== permitId) {
+                const selectedPermit = permits.find(p => p._id === permitId);
+                if (selectedPermit) {
+                  // Update selection state
+                  if (externalSelectedPermitId === undefined) {
+                    setInternalSelectedPermitId(permitId);
+                  }
+                  
+                  // Notify parent
+                  onPermitSelect?.(selectedPermit);
+                  
+                  // Clear previous amenities if switching
+                  if (selectedPermitId) {
+                    clearAmenityMarkers();
+                  }
+                  
+                  // Zoom to permit and fetch new amenities
+                  zoomToPermit(coordinates as [number, number]);
+                  fetchAmenitiesAroundDevelopment(coordinates as [number, number]);
+                }
               }
-              // Zoom to permit and fetch new amenities
-              zoomToPermit(coordinates as [number, number]);
-              fetchAmenitiesAroundDevelopment(coordinates as [number, number]);
-            } else if (!newSelectedId) {
-              // Deselecting current development - keep amenities visible
-              // Only clear if user wants to hide everything
             }
           }}
         />
@@ -268,7 +293,27 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
         // Add the marker to the map
         .addTo(map.current!);
     });
-  }, [permits, selectedPermitId, setCurrentDevelopment, setCurrentDevelopmentCoordinates]);
+  }, [permits, selectedPermitId, visibleInfoCardId]);
+
+  // Effect to handle external permit selection (from sidebar)
+  useEffect(() => {
+    if (externalSelectedPermitId && permits.length > 0) {
+      const selectedPermit = permits.find(p => p._id === externalSelectedPermitId);
+      if (selectedPermit) {
+        const coordinates = selectedPermit.geom?.geometry?.coordinates;
+        if (coordinates) {
+          // Show info card for sidebar selection
+          setVisibleInfoCardId(externalSelectedPermitId);
+          zoomToPermit(coordinates as [number, number]);
+          fetchAmenitiesAroundDevelopment(coordinates as [number, number]);
+        }
+      }
+    } else if (externalSelectedPermitId === null) {
+      // External deselection - clear everything including info card
+      setVisibleInfoCardId(null);
+      clearAmenityMarkers();
+    }
+  }, [externalSelectedPermitId, permits]);
 
   // Effect to update development zone when coordinates change
   useEffect(() => {
@@ -301,7 +346,7 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
   return (
     <>
       <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
-      <AmenityModal 
+      <AmenityModal
         isOpen={showAmenityModal}
         onClose={() => setShowAmenityModal(false)}
         amenity={selectedAmenity}
