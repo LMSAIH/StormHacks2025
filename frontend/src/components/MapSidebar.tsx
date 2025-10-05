@@ -183,13 +183,6 @@ const MapSidebar = ({ isOpen, onToggle, permits = [], selectedPermit, onPermitSe
                     <Button variant="outline" className="w-full justify-start">
                       📊 Generate Report
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start"
-                      onClick={onToggleBoundaries}
-                    >
-                      {showBoundaries ? '🗺️ Hide Boundaries' : '🗺️ Show Boundaries'}
-                    </Button>
                     <Button variant="outline" className="w-full justify-start">
                       🔍 Filter Projects
                     </Button>
