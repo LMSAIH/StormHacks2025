@@ -1,51 +1,51 @@
-import React, { useRef, useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-
-// Import the Mapbox GL CSS
-// This is essential for the map to display correctly
+import React, { useRef, useEffect } from 'react';
+import mapboxgl, { Map as MapboxMap } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-// Set the Mapbox access token from your .env file
+// We only need to import the data
+import { pointsData } from '../data/points';
+
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+
 const Map: React.FC = () => {
-  // Create a ref to hold the map container DOM element
   const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<MapboxMap | null>(null);
 
-  // Create a ref to hold the map instance itself
-  const map = useRef<mapboxgl.Map | null>(null);
-
-  // Set the initial state for the map's center and zoom level
-  const [lng] = useState(-123.1207);
-  const [lat] = useState(49.2827);
-  const [zoom] = useState(12);
-
-  // The main effect for initializing the map
   useEffect(() => {
-    // This prevents the map from being re-initialized on every render
     if (map.current || !mapContainer.current) return;
 
-    // Create the new map instance
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
+      // Using the default streets style guarantees the marker icon exists
       style: 'mapbox://styles/mapbox/dark-v11',
-      center: [lng, lat],
-      zoom: zoom,
+      center: [-123.1393, 49.2458],
+      zoom: 12.3,
     });
 
-    // Add navigation controls (zoom in/out)
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // --- LOGIC TO ADD MULTIPLE MARKERS ---
 
-    // The cleanup function will run when the component is unmounted
+    // The 'load' event waits for the map style to be fully loaded
+    map.current.on('load', () => {
+      // Loop through each point in our data file
+      pointsData.features.forEach((feature) => {
+        // Create a new marker for each feature
+        new mapboxgl.Marker()
+          // Set the marker's position from the feature's coordinates
+          .setLngLat(feature.geometry.coordinates as [number, number])
+          // Add the marker to the map
+          .addTo(map.current!);
+      });
+    });
+
+    // --- END OF MARKER LOGIC ---
+    
+    const mapInstance = map.current;
     return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
+      mapInstance.remove();
+      map.current = null;
     };
-  }, [lng, lat, zoom]); // Dependencies for initialization
+  }, []);
 
-  // Render the div that will contain the map
-  // It's important to give it a specific height for it to be visible
   return <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />;
 };
 

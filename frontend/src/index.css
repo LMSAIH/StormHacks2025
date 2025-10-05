@@ -1,6 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Quattrocento:wght@400;700&family=Roboto+Mono:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 
+@keyframes fadeInDots {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-dots {
+  animation: fadeInDots 2s ease-in-out forwards;
+}
+
 
 html {
 	scroll-behavior: smooth;
