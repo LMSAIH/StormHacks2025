@@ -65,8 +65,15 @@ const Hero = () => {
               size="lg"
               variant="outline"
               className="border-2 bg-background/50 px-8 py-6 text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
+              asChild
             >
-              Learn More
+              <a 
+                href="https://github.com/LMSAIH/StormHacks2025" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                Learn More
+              </a>
             </Button>
           </div>
 
