@@ -67,8 +67,8 @@ class HypotheticalDevelopmentRequest(BaseModel):
     specific_use_category: Optional[List[str]] = Field(default=[], description="Specific use categories like 'Multiple Dwelling'")
     max_distance_km: Optional[float] = Field(default=1.0, description="Maximum distance to search for nearby amenities in kilometers")
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "longitude": -123.1207,
                 "latitude": 49.2827,
@@ -80,6 +80,7 @@ class HypotheticalDevelopmentRequest(BaseModel):
                 "max_distance_km": 1.0
             }
         }
+    )
 
 def haversine_distance(lon1, lat1, lon2, lat2):
     """
