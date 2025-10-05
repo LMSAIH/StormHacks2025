@@ -7,7 +7,7 @@ interface SolutionsProps {
 
 const Solutions: React.FC<SolutionsProps> = () => {
     return (
-    <section id="solutions" className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 py-8 scroll-mt-14 lg:scroll-mt-18">
+    <section id="solutions" className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden px-4 py-16 scroll-mt-14 lg:scroll-mt-18">
             <div className="relative h-full w-full overflow-hidden flex items-center justify-center">         
                 <div className="max-w-6xl w-full flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
                     {/* Left side: Header and paragraphs */}
