@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Map from '../components/Map';
 import MapSidebar from '../components/MapSidebar';
+import RightPanel from '../components/RightPanel';
 
 const Visualization: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -30,6 +31,7 @@ const Visualization: React.FC = () => {
                     currentDevelopmentCoordinates={currentDevelopmentCoordinates}
                 />
             </div>
+        <RightPanel details={currentDevelopment} />
         </div>
     );
 };

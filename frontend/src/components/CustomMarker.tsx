@@ -116,7 +116,10 @@ const CustomMarker: React.FC<MarkerProps> = ({ markerType = 'building', name, ca
                         </div>
 
                         {/* Action Button */}
-                        <button className="mt-3 w-full rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+                        <button
+                            onClick={() => setCurrentDevelopment({ name, category, coordinates })}
+                            className="mt-3 w-full rounded-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                        >
                             View Details
                         </button>
 
