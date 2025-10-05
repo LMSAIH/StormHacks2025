@@ -27,6 +27,18 @@ const RightPanel: React.FC<RightPanelProps> = ({ selectedPermit, isVisible: prop
                 return;
             }
 
+            // Check if this is a hypothetical permit with embedded impact report
+            if (selectedPermit.hypothetical && selectedPermit.impact_report) {
+                // Use the embedded impact report directly
+                setImpactData({
+                    success: true,
+                    permit_id: selectedPermit._id,
+                    report: selectedPermit.impact_report
+                });
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             setError(null);
 
@@ -43,7 +55,7 @@ const RightPanel: React.FC<RightPanelProps> = ({ selectedPermit, isVisible: prop
         };
 
         fetchImpactAnalysis();
-    }, [selectedPermit?._id]);
+    }, [selectedPermit?._id, selectedPermit?.hypothetical, selectedPermit?.impact_report]);
 
     if (!selectedPermit) return null;
 
@@ -167,9 +179,9 @@ const RightPanel: React.FC<RightPanelProps> = ({ selectedPermit, isVisible: prop
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
-                                        {impactData.report.AnalyzedInfrastructure.map((item: AnalyzedInfrastructure) => (
+                                        {impactData.report.AnalyzedInfrastructure.map((item: AnalyzedInfrastructure, index: number) => (
                                             <div
-                                                key={item._id}
+                                                key={`${item._id}-${index}`}
                                                 className={`p-4 rounded-lg border transition-all hover:shadow-sm ${getImpactScoreBg()}`}
                                             >
                                                 <div className="flex items-start justify-between mb-3">

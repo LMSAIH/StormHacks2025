@@ -4,6 +4,8 @@ import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { getDevelopmentPermits } from '@/api/requests';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import { createRoot } from 'react-dom/client';
 
 import AmenityModal from '../AmenityModal';
 import boundariesData from '@/data/boundaries2.geojson';
@@ -31,9 +33,14 @@ const Map: React.FC<MapProps> = ({
   selectedPermitId: externalSelectedPermitId,
   showBoundaries = false,
   permits: externalPermits = [],
+  isPinDropMode = false,
+  onMapClick,
+  pinnedLocation,
+  maxDisplayCount = null
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const pinMarkerRef = useRef<mapboxgl.Marker | null>(null);
 
   // Use state management hook
   const {
@@ -50,12 +57,25 @@ const Map: React.FC<MapProps> = ({
   } = useMapState();
 
   // Determine which permits and selection to use
-  const permits = externalPermits.length > 0 ? externalPermits : internalPermits;
+  const allPermits = externalPermits.length > 0 ? externalPermits : internalPermits;
+  
+  // Sort permits by project value (cost) in descending order, then apply filtering
+  const sortedPermits = [...allPermits].sort((a, b) => {
+    const valueA = a.projectvalue || 0;
+    const valueB = b.projectvalue || 0;
+    return valueB - valueA; // Descending order (highest cost first)
+  });
+  
+  const permits = maxDisplayCount !== null && maxDisplayCount > 0
+    ? sortedPermits.slice(0, maxDisplayCount)
+    : sortedPermits;
+  
   const selectedPermitId = externalSelectedPermitId !== undefined ? externalSelectedPermitId : internalSelectedPermitId;
 
-  // Derive coordinates from selected permit
+  // Derive coordinates from selected permit OR pinned location
   const selectedPermit = permits.find(p => p._id === selectedPermitId);
-  const currentDevelopmentCoordinates = selectedPermit?.geom?.geometry?.coordinates || null;
+  const currentDevelopmentCoordinates = selectedPermit?.geom?.geometry?.coordinates || 
+    (pinnedLocation ? [pinnedLocation.lon, pinnedLocation.lat] : null);
 
   // Initialize amenity markers hook
   const { clearAmenityMarkers, fetchAmenitiesAroundDevelopment } = useAmenityMarkers(
@@ -130,8 +150,14 @@ const Map: React.FC<MapProps> = ({
     try {
       const response = await getDevelopmentPermits(DEFAULT_PERMITS_QUERY);
       const permitsData = response.permits || [];
-      setInternalPermits(permitsData);
-      onPermitsLoad?.(permitsData);
+      
+      // Deduplicate permits by _id to avoid React key conflicts
+      const uniquePermits = permitsData.filter((permit: any, index: number, self: any[]) => 
+        index === self.findIndex((p: any) => p._id === permit._id)
+      );
+      
+      setInternalPermits(uniquePermits);
+      onPermitsLoad?.(uniquePermits);
     } catch (error) {
       console.error('Error fetching permits:', error);
     }
@@ -162,6 +188,32 @@ const Map: React.FC<MapProps> = ({
     };
   }, []);
 
+  // Handle click events for pin dropping - separate effect with dependencies
+  useEffect(() => {
+    if (!map.current) return;
+
+    const handleMapClick = (e: mapboxgl.MapMouseEvent) => {
+      if (isPinDropMode && onMapClick) {
+        console.log('Pin drop click detected:', isPinDropMode, onMapClick); // Debug log
+        const coordinates = {
+          lon: e.lngLat.lng,
+          lat: e.lngLat.lat
+        };
+        onMapClick(coordinates);
+      }
+    };
+
+    // Add the click handler
+    map.current.on('click', handleMapClick);
+
+    // Cleanup - remove the click handler
+    return () => {
+      if (map.current) {
+        map.current.off('click', handleMapClick);
+      }
+    };
+  }, [isPinDropMode, onMapClick]);
+
   // Handle external permit selection (from sidebar)
   useEffect(() => {
     if (externalSelectedPermitId && permits.length > 0) {
@@ -181,6 +233,81 @@ const Map: React.FC<MapProps> = ({
       clearAmenityMarkers();
     }
   }, [externalSelectedPermitId, permits]);
+
+  // Handle hypothetical permit with pinned location - fetch amenities
+  useEffect(() => {
+    console.log('Hypothetical permit effect triggered:', {
+      pinnedLocation,
+      isHypothetical: selectedPermit?.hypothetical,
+      selectedPermitId: selectedPermit?._id
+    });
+    
+    if (pinnedLocation && selectedPermit?.hypothetical) {
+      // This is a hypothetical permit, fetch amenities around the pinned location
+      const coordinates: [number, number] = [pinnedLocation.lon, pinnedLocation.lat];
+      console.log('Fetching amenities for hypothetical permit at:', coordinates);
+      zoomToPermit(coordinates);
+      fetchAmenitiesAroundDevelopment(coordinates);
+    }
+  }, [pinnedLocation, selectedPermit?.hypothetical, selectedPermit?._id]);
+
+  // Handle pin drop mode cursor change
+  useEffect(() => {
+    if (map.current) {
+      const canvas = map.current.getCanvas();
+      if (isPinDropMode) {
+        canvas.style.cursor = 'crosshair';
+      } else {
+        canvas.style.cursor = '';
+      }
+    }
+  }, [isPinDropMode]);
+
+  // Handle pinned location marker
+  useEffect(() => {
+    if (map.current) {
+      // Remove existing marker if any
+      if (pinMarkerRef.current) {
+        pinMarkerRef.current.remove();
+        pinMarkerRef.current = null;
+      }
+      
+      if (pinnedLocation) {
+        // Create custom marker element
+        const el = document.createElement('div');
+        el.className = 'hypothetical-pin-marker';
+        el.style.width = '48px';
+        el.style.height = '48px';
+        el.style.cursor = 'pointer';
+        
+        // Create the marker HTML similar to CustomMarker but with a pin icon
+        const markerRoot = createRoot(el);
+        markerRoot.render(
+          <div className="relative flex items-center justify-center">
+            <div className="relative z-10 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-blue-500 shadow-lg transition-all duration-300 hover:scale-125 hover:shadow-xl">
+              <FaMapMarkerAlt className="text-lg text-white" />
+            </div>
+          </div>
+        );
+        
+        // Create and add the marker
+        pinMarkerRef.current = new mapboxgl.Marker({
+          element: el,
+          anchor: 'bottom'
+        })
+          .setLngLat([pinnedLocation.lon, pinnedLocation.lat])
+          .addTo(map.current);
+      }
+    }
+    
+    // Cleanup function
+    return () => {
+      if (pinMarkerRef.current) {
+        pinMarkerRef.current.remove();
+        pinMarkerRef.current = null;
+      }
+    };
+  }, [pinnedLocation]);
 
   return (
     <>

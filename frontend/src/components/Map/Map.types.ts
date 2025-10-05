@@ -6,6 +6,10 @@ export interface MapProps {
   onPermitSelect?: (permitId: string | null) => void;
   selectedPermitId?: string | null;
   permits?: any[];
+  isPinDropMode?: boolean;
+  onMapClick?: (coordinates: {lon: number, lat: number}) => void;
+  pinnedLocation?: {lon: number, lat: number} | null;
+  maxDisplayCount?: number | null;
 }
 
 export interface Permit {
