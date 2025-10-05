@@ -15,7 +15,7 @@ const Home = () => {
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--background)/0.2),transparent_70%)]" />
             </div>
 
-            <div className="relative z-10 flex min-h-screen flex-col">
+            <div className="relative z-10 flex flex-col">
                 <Navbar />
                 <Hero />
                 <Solutions  />

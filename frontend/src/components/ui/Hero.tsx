@@ -7,7 +7,7 @@ const DottedMap = lazy(() => import("./dotted-map").then(module => ({ default: m
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background group">
+    <section id="platform" className="relative min-h-screen w-full overflow-hidden bg-background group">
       {/* Single Beautiful Dotted Map with Global Markers */}
       <div className="absolute inset-0">
         <Suspense fallback={<div className="absolute inset-0" />}>

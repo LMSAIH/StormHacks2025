@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
                     <a href="#platform" className="text-sm hover:text-gray-300 transition-all">
                         Platform
                     </a>
-                    <a href="#solution" className="text-sm hover:text-gray-300 transition-all">
+                    <a href="#solutions" className="text-sm hover:text-gray-300 transition-all">
                         Solution
                     </a>
                     <a href="#impact" className="text-sm hover:text-gray-300 transition-all">
