@@ -10,7 +10,6 @@ const Hero = () => {
     <section id="platform" className="relative min-h-screen w-full overflow-hidden group">
       {/* Single Beautiful Dotted Map with Global Markers */}
       <div className="absolute inset-0">
-        <Suspense fallback={<div className="absolute inset-0" />}>
           <div className="animate-fade-in-dots">
             <DottedMap
               width={280}
@@ -20,7 +19,6 @@ const Hero = () => {
               className="text-foreground/20 group-hover:text-foreground/60 transition-colors duration-700"
         />
           </div>
-        </Suspense>
       </div>
 
       {/* Radial gradient for spotlight effect */}
