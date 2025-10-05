@@ -36,7 +36,7 @@ const Hero = () => {
 
           {/* Main Heading */}
           <H1 className="mb-6 bg-gradient-to-br from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
-            Visualize how
+            Discover how
             <br />
             <span className="text-blue-200">
               development projects impact communities
@@ -53,9 +53,12 @@ const Hero = () => {
             <Button
               size="lg"
               className="group relative overflow-hidden bg-primary px-8 py-6 text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20"
+              asChild
             >
-              <span className="relative z-10">Start Analyzing</span>
-              <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity" />
+              <a href="/Visualization">
+                <span className="relative z-10">Start Analyzing</span>
+                <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity" />
+              </a>
             </Button>
             
             <Button
