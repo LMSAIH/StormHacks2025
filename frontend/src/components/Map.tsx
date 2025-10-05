@@ -1,12 +1,23 @@
 import React, { useRef, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import mapboxgl, { Map as MapboxMap } from 'mapbox-gl';
+import { getAmenities, getDevelopmentPermits } from '@/api/requests';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import * as turf from '@turf/turf';
+import { 
+  FaTree, 
+  FaPalette, 
+  FaBuilding, 
+  FaBook, 
+  FaTheaterMasks, 
+  FaRestroom, 
+  FaTrain, 
+  FaSchool, 
+  FaFireExtinguisher 
+} from 'react-icons/fa';
 
-// We only need to import the data
-import { pointsData } from '../data/points';
 import CustomMarker from './CustomMarker';
+import AmenityModal from './AmenityModal';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -18,7 +29,131 @@ type MapProps = {
 
 const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentCoordinates, currentDevelopmentCoordinates }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
+  const [permits, setPermits] = React.useState<any[]>([]);
+  const [selectedPermitId, setSelectedPermitId] = React.useState<string | null>(null);
+  const [amenities, setAmenities] = React.useState<any>(null);
+  const [selectedAmenity, setSelectedAmenity] = React.useState<any>(null);
+  const [showAmenityModal, setShowAmenityModal] = React.useState(false);
+  const amenityMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const map = useRef<MapboxMap | null>(null);
+
+  const zoomToPermit = (coordinates: [number, number]) => {
+    if (map.current) {
+      map.current.flyTo({
+        center: coordinates,
+        zoom: 16,
+        duration: 1500,
+        essential: true
+      });
+    }
+  };
+
+  const fetchAmenitiesAroundDevelopment = async (coordinates: [number, number]) => {
+    try {
+      const response = await getAmenities({ 
+        lon: coordinates[0], 
+        lat: coordinates[1], 
+        distance: 0.5 // 500m radius
+      });
+      setAmenities(response);
+      displayAmenityMarkers(response);
+    } catch (error) {
+      console.error('Error fetching amenities:', error);
+    }
+  };
+
+  const clearAmenityMarkers = () => {
+    amenityMarkersRef.current.forEach(marker => marker.remove());
+    amenityMarkersRef.current = [];
+  };
+
+  const displayAmenityMarkers = (amenitiesData: any) => {
+    if (!map.current || !amenitiesData.amenities) return;
+
+    // Clear existing amenity markers
+    clearAmenityMarkers();
+
+    // Add markers for each amenity type
+    Object.entries(amenitiesData.amenities).forEach(([type, amenityList]: [string, any]) => {
+      if (Array.isArray(amenityList)) {
+        amenityList.forEach((amenity) => {
+          const coords = amenity.geom?.geometry?.coordinates;
+          if (!coords) return;
+
+          // Create a container for the React icon
+          const amenityEl = document.createElement('div');
+          amenityEl.className = 'amenity-marker';
+          
+          // Render the React icon into the container
+          const root = createRoot(amenityEl);
+          const IconComponent = getAmenityIcon(type);
+          
+          root.render(
+            <div 
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-lg border-2 border-gray-200 hover:scale-110 transition-transform cursor-pointer hover:shadow-xl"
+              title={getAmenityName(amenity, type)}
+              style={{ color: getAmenityColor(type) }}
+              onClick={() => {
+                setSelectedAmenity({ ...amenity, type });
+                setShowAmenityModal(true);
+              }}
+            >
+              <IconComponent size={18} />
+            </div>
+          );
+
+          const marker = new mapboxgl.Marker({ element: amenityEl })
+            .setLngLat(coords as [number, number])
+            .addTo(map.current!);
+
+          amenityMarkersRef.current.push(marker);
+        });
+      }
+    });
+  };
+
+  const getAmenityName = (amenity: any, type: string): string => {
+    if (amenity.name) return amenity.name;
+    if (amenity.title_of_work) return amenity.title_of_work; // for public art
+    if (amenity.school_name) return amenity.school_name; // for schools
+    if (amenity.park_name) return amenity.park_name; // for washrooms
+    return type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  const getAmenityIcon = (type: string) => {
+    const icons: { [key: string]: any } = {
+      parks: FaTree,
+      public_art: FaPalette,
+      community_centers: FaBuilding,
+      libraries: FaBook,
+      cultural_spaces: FaTheaterMasks,
+      public_washrooms: FaRestroom,
+      rapid_transit_stations: FaTrain,
+      schools: FaSchool,
+      fire_halls: FaFireExtinguisher
+    };
+    return icons[type] || FaBuilding;
+  };
+
+  const getAmenityColor = (type: string): string => {
+    const colors: { [key: string]: string } = {
+      parks: '#22c55e',
+      public_art: '#8b5cf6',
+      community_centers: '#f59e0b',
+      libraries: '#3b82f6',
+      cultural_spaces: '#ec4899',
+      public_washrooms: '#6b7280',
+      rapid_transit_stations: '#ef4444',
+      schools: '#10b981',
+      fire_halls: '#dc2626'
+    };
+    return colors[type] || '#6b7280';
+  };
+
+  const getPermits = async () => {
+    const response = await getDevelopmentPermits({ lon: -123.15525, lat: 49.249783, distance: 18 });
+    setPermits(response.permits || []);
+  };
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -31,10 +166,9 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
       zoom: 12.3,
     });
 
-    // --- LOGIC TO ADD MULTIPLE MARKERS ---
-
     // The 'load' event waits for the map style to be fully loaded
     map.current.on('load', () => {
+      getPermits();
       // Add source for development zone circle
       if (map.current) {
         map.current.addSource('development-zone', {
@@ -68,36 +202,6 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
           }
         });
       }
-
-      // Loop through each point in our data file
-      pointsData.features.forEach((feature) => {
-        // Create a container element for the React component
-        const markerDiv = document.createElement('div');
-        markerDiv.className = 'custom-marker-container';
-
-        // Render the React component into the div
-        const root = createRoot(markerDiv);
-        root.render(
-          <CustomMarker
-            name={feature.properties?.name || 'Unknown'}
-            markerType='development'
-            setCurrentDevelopment={setCurrentDevelopment}
-            setCurrentDevelopmentCoordinates={setCurrentDevelopmentCoordinates}
-            category={feature.properties?.category || 'default'}
-            coordinates={feature.geometry.coordinates as [number, number]}
-          />
-        );
-
-        // Create a new marker with the custom element
-        new mapboxgl.Marker({
-          element: markerDiv,
-          anchor: 'center',
-        })
-          // Set the marker's position from the feature's coordinates
-          .setLngLat(feature.geometry.coordinates as [number, number])
-          // Add the marker to the map
-          .addTo(map.current!);
-      });
     });
 
     const mapInstance = map.current;
@@ -106,6 +210,65 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
       map.current = null;
     };
   }, []);
+
+  // Effect to render permit markers when permits data is loaded
+  useEffect(() => {
+    if (!map.current || permits.length === 0) return;
+
+    // Clear existing markers
+    const existingMarkers = document.querySelectorAll('.custom-marker-container');
+    existingMarkers.forEach(marker => marker.remove());
+
+    // Loop through each permit in our permits data
+    permits.forEach((permit) => {
+      // Extract coordinates from permit geom
+      const coordinates = permit.geom?.geometry?.coordinates;
+      if (!coordinates) return;
+
+      // Create a container element for the React component
+      const markerDiv = document.createElement('div');
+      markerDiv.className = 'custom-marker-container';
+
+      // Render the React component into the div
+      const root = createRoot(markerDiv);
+      root.render(
+        <CustomMarker
+          permit={permit}
+          setCurrentDevelopment={setCurrentDevelopment}
+          setCurrentDevelopmentCoordinates={setCurrentDevelopmentCoordinates}
+          isSelected={selectedPermitId === permit._id}
+          onSelect={(permitId) => {
+            const newSelectedId = permitId === selectedPermitId ? null : permitId;
+            const previousSelectedId = selectedPermitId;
+            setSelectedPermitId(newSelectedId);
+            
+            if (newSelectedId && newSelectedId !== previousSelectedId) {
+              // Switching to a different development - clear previous amenities
+              if (previousSelectedId) {
+                clearAmenityMarkers();
+              }
+              // Zoom to permit and fetch new amenities
+              zoomToPermit(coordinates as [number, number]);
+              fetchAmenitiesAroundDevelopment(coordinates as [number, number]);
+            } else if (!newSelectedId) {
+              // Deselecting current development - keep amenities visible
+              // Only clear if user wants to hide everything
+            }
+          }}
+        />
+      );
+
+      // Create a new marker with the custom element
+      new mapboxgl.Marker({
+        element: markerDiv,
+        anchor: 'center',
+      })
+        // Set the marker's position from the permit's coordinates
+        .setLngLat(coordinates as [number, number])
+        // Add the marker to the map
+        .addTo(map.current!);
+    });
+  }, [permits, selectedPermitId, setCurrentDevelopment, setCurrentDevelopmentCoordinates]);
 
   // Effect to update development zone when coordinates change
   useEffect(() => {
@@ -135,7 +298,16 @@ const Map: React.FC<MapProps> = ({ setCurrentDevelopment, setCurrentDevelopmentC
     }
   }, [currentDevelopmentCoordinates]);
 
-  return <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />;
+  return (
+    <>
+      <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />
+      <AmenityModal 
+        isOpen={showAmenityModal}
+        onClose={() => setShowAmenityModal(false)}
+        amenity={selectedAmenity}
+      />
+    </>
+  );
 };
 
 export default Map;
