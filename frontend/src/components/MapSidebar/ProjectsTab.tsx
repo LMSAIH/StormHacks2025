@@ -33,7 +33,7 @@ const ProjectsTab: React.FC<ProjectsTabProps> = ({ permits, selectedPermit, onPe
     <div className="space-y-4">
       {/* Project Cards */}
       {currentPermits.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-3 scrollbar-hide">
           {currentPermits.map((permit) => (
             <ProjectCard
               key={permit._id}
