@@ -1,16 +1,21 @@
 // src/pages/Visualization.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import Map from '../components/Map';
+import MapSidebar from '../components/MapSidebar';
 
 const Visualization: React.FC = () => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [currentDevelopment, setCurrentDevelopment] = useState(null);
+
     return (
         // Make this a full-height flex container
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-            <h1>Map Visualization</h1>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', position: 'relative' }}>
+            {/* Sidebar */}
+            <MapSidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-            {/* This div will grow to fill the remaining space */}
-            <div style={{ flexGrow: 1 }}>
+            {/* Map Container */}
+            <div style={{ flexGrow: 1, position: 'relative' }}>
                 <Map />
             </div>
         </div>
