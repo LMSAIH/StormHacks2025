@@ -8,9 +8,10 @@ interface MarkerProps {
     coordinates: [number, number];
     onClick?: () => void;
     setCurrentDevelopment: any;
+    setCurrentDevelopmentCoordinates: any;
 }
 
-const CustomMarker: React.FC<MarkerProps> = ({ markerType = 'building', name, category, coordinates, setCurrentDevelopment }) => {
+const CustomMarker: React.FC<MarkerProps> = ({ markerType = 'building', name, category, coordinates, setCurrentDevelopment, setCurrentDevelopmentCoordinates }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isClicked, setIsClicked] = useState(false);
 
@@ -52,7 +53,7 @@ const CustomMarker: React.FC<MarkerProps> = ({ markerType = 'building', name, ca
         `}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                onClick={() => { setIsClicked(!isClicked); setCurrentDevelopment(coordinates); }}
+                onClick={() => { setIsClicked(!isClicked); setCurrentDevelopmentCoordinates(coordinates); }}
             >
                 <span className="text-xl">{getCategoryIcon(category)}</span>
             </div>

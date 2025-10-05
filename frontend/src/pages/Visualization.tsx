@@ -7,6 +7,7 @@ import MapSidebar from '../components/MapSidebar';
 const Visualization: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [currentDevelopment, setCurrentDevelopment] = useState(null);
+    const [currentDevelopmentCoordinates, setCurrentDevelopmentCoordinates] = useState<[number, number] | null>(null);
 
     return (
         // Make this a full-height flex container
@@ -16,7 +17,11 @@ const Visualization: React.FC = () => {
 
             {/* Map Container */}
             <div style={{ flexGrow: 1, position: 'relative' }}>
-                <Map />
+                <Map
+                    setCurrentDevelopment={setCurrentDevelopment}
+                    setCurrentDevelopmentCoordinates={setCurrentDevelopmentCoordinates}
+                    currentDevelopmentCoordinates={currentDevelopmentCoordinates}
+                />
             </div>
         </div>
     );
