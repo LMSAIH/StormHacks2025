@@ -13,7 +13,7 @@ const Solutions: React.FC<SolutionsProps> = () => {
                     Whether you're a nonprofit, government agency, or simply looking for your future home. We want to help you analyze your city, one marker at a time.
                     <br />
                     <br />
-                    We tackle the unknowns in your developing neighbourhoods, turning complex data into clear, actionable insights.
+                    We tackle the unknowns in your developing neighbourhoods, turning open source data into clear, actionable insights.
                 </p>
             </div>
         </section>
