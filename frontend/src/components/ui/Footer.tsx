@@ -1,4 +1,5 @@
 import React from 'react';
+import {P } from './typography'
 
 const Footer: React.FC = () => {
     return (
@@ -6,33 +7,35 @@ const Footer: React.FC = () => {
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex flex-col justify-start">
-                        <p className="text-sm">
+                        <P className="text-sm">
                             &copy; {new Date().getFullYear()} All rights reserved.
-                        </p>
-                        <p className="text-xs text-muted-foreground">
+                        </P>
+                        <P className="text-xs text-muted-foreground">
                             <a href="https://www.isocons.app/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
                                 Isometric Icons ©2025
                             </a> is licensed under{' '}
                             <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
                                 CC BY 4.0
                             </a>
-                        </p>
+                        </P>
                     </div>
                     <div className="absolute inset-0 flex justify-center items-center text-center">
-                        <p className="text-sm">
+                        <P className="text-sm">
                             Written by <a href="https://github.com/LMSAIH/StormHacks2025" className="font-semibold" target="_blank" rel="noopener noreferrer">404 Rizz not Found</a> for SFU StormHacks 2025
-                        </p>
+                        </P>
                     </div>
-                    <div className="flex gap-4 justify-end pr-4">
-                        <a href="#platform" className="text-sm hover:text-gray-300 transition-all">
-                            Platform
-                        </a>
-                        <a href="#solutions" className="text-sm hover:text-gray-300 transition-all">
-                            Solution
-                        </a>
-                        <a href="#impact" className="text-sm hover:text-gray-300 transition-all">
-                            Impact
-                        </a>
+                    <div className="justify-end pr-4">
+                        <P className="text-sm flex gap-4">
+                            <a href="#platform" className="hover:text-gray-300 transition-all">
+                                Platform
+                            </a>
+                            <a href="#solutions" className="hover:text-gray-300 transition-all">
+                                Solution
+                            </a>
+                            <a href="#impact" className="hover:text-gray-300 transition-all">
+                                Impact
+                            </a>
+                        </P>
                     </div>
                 </div>
             </div>
