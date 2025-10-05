@@ -13,7 +13,14 @@ const MapSidebar: React.FC<SidebarProps> = ({
     selectedPermit,
     onPermitSelect,
     showBoundaries = false,
-    onToggleBoundaries
+    onToggleBoundaries,
+    isPinDropMode = false,
+    onPinDropModeToggle,
+    pinnedLocation,
+    onClearPin,
+    onHypotheticalReportGenerated,
+    maxDisplayCount,
+    onMaxDisplayCountChange
 }) => {
     const [activeTab, setActiveTab] = useState<TabType>('overview');
 
@@ -47,6 +54,13 @@ const MapSidebar: React.FC<SidebarProps> = ({
                                 permits={permits}
                                 showBoundaries={showBoundaries}
                                 onToggleBoundaries={onToggleBoundaries}
+                                isPinDropMode={isPinDropMode}
+                                onPinDropModeToggle={onPinDropModeToggle}
+                                pinnedLocation={pinnedLocation}
+                                onClearPin={onClearPin}
+                                onHypotheticalReportGenerated={onHypotheticalReportGenerated}
+                                maxDisplayCount={maxDisplayCount}
+                                onMaxDisplayCountChange={onMaxDisplayCountChange}
                             />
                         )}
 
@@ -55,6 +69,8 @@ const MapSidebar: React.FC<SidebarProps> = ({
                                 permits={permits}
                                 selectedPermit={selectedPermit}
                                 onPermitSelect={onPermitSelect}
+                                maxDisplayCount={maxDisplayCount}
+                                onMaxDisplayCountChange={onMaxDisplayCountChange}
                             />
                         )}
                     </div>
