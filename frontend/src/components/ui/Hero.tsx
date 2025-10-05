@@ -24,9 +24,9 @@ const Hero = () => {
       </div>
 
       {/* Gradient Overlays for depth - Enhanced */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/60 to-background transition-all duration-700 group-hover:from-background/80 group-hover:via-background/40" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/8 transition-all duration-700 group-hover:from-primary/15 group-hover:to-accent/15" />
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/40 to-transparent transition-all duration-700 group-hover:via-background/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/60 to-background transition-all duration-700 :from-background/8" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/8 transition-all duration-700" />
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/40 to-transparent transition-all duration-700" />
       
       {/* Radial gradient for spotlight effect */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background))_100%)] transition-all duration-700 group-hover:bg-[radial-gradient(ellipse_at_center,transparent_30%,hsl(var(--background))_100%)]" />
@@ -62,7 +62,7 @@ const Hero = () => {
               className="group relative overflow-hidden bg-primary px-8 py-6 text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20"
             >
               <span className="relative z-10">Start Analyzing</span>
-              <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity" />
             </Button>
             
             <Button
