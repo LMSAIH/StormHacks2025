@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react"
+import { lazy } from "react"
 import { H1, Lead, P } from "./typography"
 import { Button } from "./button"
 
