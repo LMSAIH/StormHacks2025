@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Map from '../components/Map';
 import MapSidebar from '../components/MapSidebar';
+import RightPanel from '../components/RightPanel';
 
 const Visualization: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
     const [permits, setPermits] = useState<any[]>([]);
     const [selectedPermit, setSelectedPermit] = useState<any>(null);
     const [selectedPermitId, setSelectedPermitId] = useState<string | null>(null);
@@ -14,10 +16,19 @@ const Visualization: React.FC = () => {
     const handlePermitSelect = (permit: any) => {
         setSelectedPermit(permit);
         setSelectedPermitId(permit?._id || null);
+        
+        // Show right panel when permit is selected
+        if (permit) {
+            setIsRightPanelOpen(true);
+        }
     };
 
     const toggleBoundaries = () => {
         setShowBoundaries(!showBoundaries);
+    };
+
+    const handleRightPanelToggle = () => {
+        setIsRightPanelOpen(!isRightPanelOpen);
     };
 
     return (
@@ -44,6 +55,13 @@ const Visualization: React.FC = () => {
                     permits={permits}
                 />
             </div>
+
+            {/* Right Panel for Impact Analysis */}
+            <RightPanel
+                selectedPermit={selectedPermit}
+                isVisible={isRightPanelOpen}
+                onToggle={handleRightPanelToggle}
+            />
         </div>
     );
 };

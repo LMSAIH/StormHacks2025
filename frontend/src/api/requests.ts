@@ -59,6 +59,22 @@ export const getAmenities = async (params: LocationParams): Promise<any> => {
   }
 };
 
+/**
+ * Fetch impact report for a specific permit
+ * @param permitId - The permit ID to fetch the impact report for
+ * @returns Promise resolving to impact report data
+ */
+export const getImpactReport = async (permitId: string): Promise<any> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/impact_reports/${permitId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching impact report:', error);
+    throw error;
+  }
+};
+
 // Example usage:
 // const permits = await getDevelopmentPermits({ lon: -123.15525, lat: 49.249783, distance: 0.5 });
 // const amenities = await getAmenities({ lon: -123.15525, lat: 49.249783, distance: 1 });
+// const impactReport = await getImpactReport('68e1f303607bd68421537e47');
