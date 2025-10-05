@@ -22,26 +22,27 @@ import boundariesData from '@/data/boundaries2.geojson';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-type MapProps = {
+interface MapProps {
+  showBoundaries: boolean;
   onPermitsLoad?: (permits: any[]) => void;
-  onPermitSelect?: (permit: any) => void;
+  onPermitSelect?: (permitId: string | null) => void;
   selectedPermitId?: string | null;
-  showBoundaries?: boolean;
-  onBoundaryHover?: (boundary: any) => void;
-  onBoundaryLeave?: () => void;
-};
+  permits?: any[];
+}
 
 const Map: React.FC<MapProps> = ({
   onPermitsLoad,
   onPermitSelect,
   selectedPermitId: externalSelectedPermitId,
   showBoundaries = false,
-  onBoundaryHover,
-  onBoundaryLeave,
+  permits: externalPermits = [],
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const [permits, setPermits] = React.useState<any[]>([]);
+  const [internalPermits, setInternalPermits] = React.useState<any[]>([]);
   const [internalSelectedPermitId, setInternalSelectedPermitId] = React.useState<string | null>(null);
+  
+  // Use external permits if provided, otherwise use internal permits
+  const permits = externalPermits.length > 0 ? externalPermits : internalPermits;
   const selectedPermitId = externalSelectedPermitId !== undefined ? externalSelectedPermitId : internalSelectedPermitId;
   const [visibleInfoCardId, setVisibleInfoCardId] = React.useState<string | null>(null);
   
@@ -169,7 +170,7 @@ const Map: React.FC<MapProps> = ({
   const getPermits = async () => {
     const response = await getDevelopmentPermits({ lon: -123.15525, lat: 49.249783, distance: 18 });
     const permitsData = response.permits || [];
-    setPermits(permitsData);
+    setInternalPermits(permitsData);
     onPermitsLoad?.(permitsData);
   };
 
@@ -226,20 +227,6 @@ const Map: React.FC<MapProps> = ({
           data: boundariesData
         });
 
-        // Add boundary fill layer (initially hidden)
-        map.current.addLayer({
-          id: 'boundaries-fill',
-          type: 'fill',
-          source: 'boundaries',
-          paint: {
-            'fill-color': 'transparent',
-            'fill-opacity': 0
-          },
-          layout: {
-            'visibility': showBoundaries ? 'visible' : 'none'
-          }
-        });
-
         // Add boundary outline layer with white borders
         map.current.addLayer({
           id: 'boundaries-outline',
@@ -254,45 +241,6 @@ const Map: React.FC<MapProps> = ({
             'visibility': showBoundaries ? 'visible' : 'none'
           }
         });
-
-        // Add boundary highlight layer for hover effect
-        map.current.addLayer({
-          id: 'boundaries-highlight',
-          type: 'fill',
-          source: 'boundaries',
-          paint: {
-            'fill-color': '#3b82f6',
-            'fill-opacity': 0.3
-          },
-          filter: ['==', ['get', 'CFSAUID'], ''],
-          layout: {
-            'visibility': showBoundaries ? 'visible' : 'none'
-          }
-        });
-
-        // Add hover events for boundaries
-        map.current.on('mouseenter', 'boundaries-fill', (e) => {
-          if (e.features && e.features.length > 0) {
-            const feature = e.features[0];
-            map.current!.getCanvas().style.cursor = 'pointer';
-            
-            // Update highlight filter
-            map.current!.setFilter('boundaries-highlight', ['==', ['get', 'CFSAUID'], feature.properties?.CFSAUID || '']);
-            
-            // Call boundary hover callback
-            onBoundaryHover?.(feature.properties);
-          }
-        });
-
-        map.current.on('mouseleave', 'boundaries-fill', () => {
-          map.current!.getCanvas().style.cursor = '';
-          
-          // Clear highlight
-          map.current!.setFilter('boundaries-highlight', ['==', ['get', 'CFSAUID'], '']);
-          
-          // Call boundary leave callback
-          onBoundaryLeave?.();
-        });
       }
     });
 
@@ -303,13 +251,16 @@ const Map: React.FC<MapProps> = ({
     };
   }, []);
 
-  // Effect to render permit markers when permits data is loaded
+  // Effect to render permit markers when permits data is loaded and boundaries are hidden
   useEffect(() => {
-    if (!map.current || permits.length === 0) return;
+    if (!map.current) return;
 
     // Clear existing markers
     const existingMarkers = document.querySelectorAll('.custom-marker-container');
     existingMarkers.forEach(marker => marker.remove());
+
+    // Only render permits if boundaries are not shown and permits exist
+    if (showBoundaries || permits.length === 0) return;
 
     // Loop through each permit in our permits data
     permits.forEach((permit) => {
@@ -374,7 +325,7 @@ const Map: React.FC<MapProps> = ({
         // Add the marker to the map
         .addTo(map.current!);
     });
-  }, [permits, selectedPermitId, visibleInfoCardId]);
+  }, [permits, selectedPermitId, visibleInfoCardId, showBoundaries, externalPermits]);
 
   // Effect to handle external permit selection (from sidebar)
   useEffect(() => {
@@ -430,15 +381,9 @@ const Map: React.FC<MapProps> = ({
 
     const visibility = showBoundaries ? 'visible' : 'none';
     
-    // Update visibility for all boundary layers
-    if (map.current.getLayer('boundaries-fill')) {
-      map.current.setLayoutProperty('boundaries-fill', 'visibility', visibility);
-    }
+    // Update visibility for boundary outline layer
     if (map.current.getLayer('boundaries-outline')) {
       map.current.setLayoutProperty('boundaries-outline', 'visibility', visibility);
-    }
-    if (map.current.getLayer('boundaries-highlight')) {
-      map.current.setLayoutProperty('boundaries-highlight', 'visibility', visibility);
     }
   }, [showBoundaries]);
 
