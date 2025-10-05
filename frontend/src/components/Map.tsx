@@ -37,22 +37,7 @@ const Map: React.FC<MapProps> = ({
   const map = useRef<MapboxMap | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [layersAdded, setLayersAdded] = useState(false);
-
-  // Modified effect to handle boundary visibility changes
-  useEffect(() => {
-    if (!map.current || !isMapLoaded || !layersAdded) return;
-
-    try {
-      // Check if layers exist before updating
-      if (map.current.getLayer('boundaries-fill') && map.current.getLayer('boundaries-line')) {
-        const visibility = showBoundaries ? 'visible' : 'none';
-        map.current.setLayoutProperty('boundaries-fill', 'visibility', visibility);
-        map.current.setLayoutProperty('boundaries-line', 'visibility', visibility);
-      }
-    } catch (error) {
-      console.error('Error updating boundary visibility:', error);
-    }
-  }, [showBoundaries, isMapLoaded, layersAdded]);
+  const [selectedFeatureId, setSelectedFeatureId] = useState<number | null>(null);
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -60,161 +45,121 @@ const Map: React.FC<MapProps> = ({
     const initializeMap = async () => {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        // Using the default streets style guarantees the marker icon exists
         style: 'mapbox://styles/mapbox/dark-v11',
         center: [-123.1393, 49.2458],
         zoom: 12.3,
       });
 
-      // Add loaded event listener
       map.current.on('load', async () => {
+        console.log('Map loaded');
         setIsMapLoaded(true);
 
         try {
-          // Load boundaries data
           const boundariesData = await fetchBoundaries();
           if (!boundariesData) {
             throw new Error('Failed to load boundaries data');
           }
 
-          // Add boundaries source and layers
           map.current.addSource('boundaries', {
             type: 'geojson',
-            data: boundariesData
+            data: boundariesData,
+            generateId: true
           });
 
-          // Customize colors and opacity here
+          // Add base fill layer
           map.current.addLayer({
             id: 'boundaries-fill',
             type: 'fill',
             source: 'boundaries',
-            layout: {
-              visibility: showBoundaries ? 'visible' : 'none'
-            },
             paint: {
-              'fill-color': '#9B59B6', // Change fill color (hex color)
-              'fill-opacity': 0.1     // Change opacity (0-1)
+              'fill-color': [
+                'case',
+                ['==', ['id'], selectedFeatureId],
+                '#FFFFFF',  // Selected polygon color
+                '#FFFFFF'   // Default color
+              ],
+              'fill-opacity': [
+                'case',
+                ['==', ['id'], selectedFeatureId],
+                0.6,        // Selected opacity
+                0.2         // Default opacity
+              ]
             }
           });
 
+          // Add outline layer
           map.current.addLayer({
             id: 'boundaries-line',
             type: 'line',
             source: 'boundaries',
-            layout: {
-              visibility: showBoundaries ? 'visible' : 'none'
-            },
             paint: {
-              'line-color': '#9B59B6', // Change outline color
-              'line-width': 2,         // Change line width
-              'line-opacity': 0.8      // Change line opacity
+              'line-color': '#FFFFFF',
+              'line-width': 2
             }
+          });
+
+          // Add click interaction
+          map.current.on('click', 'boundaries-fill', (e) => {
+            if (e.features && e.features[0]) {
+              const featureId = e.features[0].id as number;
+              setSelectedFeatureId(prevId => prevId === featureId ? null : featureId);
+              console.log('Clicked feature:', e.features[0].properties);
+            }
+          });
+
+          // Add hover effect
+          map.current.on('mouseenter', 'boundaries-fill', () => {
+            if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+          });
+
+          map.current.on('mouseleave', 'boundaries-fill', () => {
+            if (map.current) map.current.getCanvas().style.cursor = '';
           });
 
           setLayersAdded(true);
-          
-          // Add development zone source and layers first
-          map.current.addSource('development-zone', {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: []
-            }
-          });
-
-          // Add development zone layers
-          map.current.addLayer({
-            id: 'development-zone-fill',
-            type: 'fill',
-            source: 'development-zone',
-            paint: {
-              'fill-color': '#3b82f6',
-              'fill-opacity': 0.2
-            }
-          });
-
-          map.current.addLayer({
-            id: 'development-zone-outline',
-            type: 'line',
-            source: 'development-zone',
-            paint: {
-              'line-color': '#3b82f6',
-              'line-width': 2,
-              'line-opacity': 0.8
-            }
-          });
-
-          // Then add markers
-          pointsData.features.forEach((feature) => {
-            // Create a container element for the React component
-            const markerDiv = document.createElement('div');
-            markerDiv.className = 'custom-marker-container';
-
-            // Render the React component into the div
-            const root = createRoot(markerDiv);
-            root.render(
-              <CustomMarker
-                name={feature.properties?.name || 'Unknown'}
-                markerType='development'
-                setCurrentDevelopment={setCurrentDevelopment}
-                setCurrentDevelopmentCoordinates={setCurrentDevelopmentCoordinates}
-                category={feature.properties?.category || 'default'}
-                coordinates={feature.geometry.coordinates as [number, number]}
-              />
-            );
-
-            // Create a new marker with the custom element
-            new mapboxgl.Marker({
-              element: markerDiv,
-              anchor: 'center',
-            })
-              // Set the marker's position from the feature's coordinates
-              .setLngLat(feature.geometry.coordinates as [number, number])
-              // Add the marker to the map
-              .addTo(map.current!);
-          });
         } catch (error) {
-          console.error('Error adding map layers:', error);
+          console.error('Error setting up boundaries:', error);
         }
       });
     };
 
     initializeMap();
 
-    const mapInstance = map.current;
     return () => {
-      mapInstance.remove();
-      map.current = null;
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, []);
 
-  // Effect to update development zone when coordinates change
+  // Update visibility based on showBoundaries prop
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !isMapLoaded || !layersAdded) return;
 
-    const source = map.current.getSource('development-zone') as mapboxgl.GeoJSONSource;
-    if (!source) return;
+    const visibility = showBoundaries ? 'visible' : 'none';
+    map.current.setLayoutProperty('boundaries-fill', 'visibility', visibility);
+    map.current.setLayoutProperty('boundaries-line', 'visibility', visibility);
+  }, [showBoundaries, isMapLoaded, layersAdded]);
 
-    if (currentDevelopmentCoordinates) {
-      // Create a 500m radius circle around the development coordinates
-      const center = currentDevelopmentCoordinates;
-      const radius = 0.5; // 500 meters in kilometers
-      const options = { steps: 64, units: 'kilometers' as const };
-      const circle = turf.circle(center, radius, options);
+  // Update selected feature styling
+  useEffect(() => {
+    if (!map.current || !isMapLoaded || !layersAdded) return;
 
-      // Update the source with the circle
-      source.setData({
-        type: 'FeatureCollection',
-        features: [circle]
-      });
-    } else {
-      // Clear the circle when no coordinates are set
-      source.setData({
-        type: 'FeatureCollection',
-        features: []
-      });
-    }
-  }, [currentDevelopmentCoordinates]);
+    map.current.setPaintProperty('boundaries-fill', 'fill-color', [
+      'case',
+      ['==', ['id'], selectedFeatureId],
+      '#FFFFFF',  // Selected polygon color
+      '#FF5733'   // Default color
+    ]);
+
+    map.current.setPaintProperty('boundaries-fill', 'fill-opacity', [
+      'case',
+      ['==', ['id'], selectedFeatureId],
+      0.1,        // Selected opacity
+      0         // Default opacity
+    ]);
+  }, [selectedFeatureId, isMapLoaded, layersAdded]);
 
   return <div ref={mapContainer} style={{ width: '100%', height: '100%' }} />;
 };
