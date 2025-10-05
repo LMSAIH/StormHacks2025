@@ -23,22 +23,17 @@ interface PermitMarkerProps {
         permitelapseddays: number;
         distance_km?: number;
     };
-    setCurrentDevelopment: (permit: any) => void;
-    setCurrentDevelopmentCoordinates: (coords: [number, number]) => void;
     isSelected: boolean;
     onSelect: (permitId: string) => void;
 }
 
 const CustomMarker: React.FC<PermitMarkerProps> = ({
     permit,
-    setCurrentDevelopment,
-    setCurrentDevelopmentCoordinates,
     isSelected,
     onSelect
 }) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    const coordinates = permit.geom.geometry.coordinates;
     const primaryUse = permit.propertyuse[0] || 'Unknown';
     const category = permit.specificusecategory[0] || primaryUse;
 
@@ -96,7 +91,6 @@ const CustomMarker: React.FC<PermitMarkerProps> = ({
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => {
                     onSelect(permit._id);
-                    setCurrentDevelopmentCoordinates(coordinates as [number, number]);
                 }}
             >
                 <IconComponent className={`${markerSize.iconSize} text-black`} />
@@ -180,13 +174,15 @@ const CustomMarker: React.FC<PermitMarkerProps> = ({
 
                         </div>
 
-                        {/* Action Button */}
+                        {/* Action Button - Remove this if not needed since we're managing state differently */}
+                        {/* 
                         <button
-                            onClick={() => setCurrentDevelopment(permit)}
+                            onClick={() => console.log('View details for permit:', permit._id)}
                             className="mt-4 w-full rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
                         >
                             View Full Details
                         </button>
+                        */}
 
                         {/* Arrow */}
                         <div className="absolute left-1/2 top-full -translate-x-1/2">

@@ -1,14 +1,102 @@
 import { useState } from 'react'
 import { H3, H4, P, PSmall, PMuted } from './ui/typography'
 import { Button } from './ui/button'
+import { 
+  FaHome, 
+  FaBuilding, 
+  FaUniversity, 
+  FaIndustry, 
+  FaCity, 
+  FaHammer,
+  FaChevronLeft,
+  FaChevronRight 
+} from 'react-icons/fa'
 
 interface SidebarProps {
   isOpen: boolean
   onToggle: () => void
+  permits?: any[]
+  selectedPermit?: any
+  onPermitSelect?: (permit: any) => void
 }
 
-const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'impact'>('overview')
+const MapSidebar = ({ isOpen, onToggle, permits = [], selectedPermit, onPermitSelect }: SidebarProps) => {
+  const [activeTab, setActiveTab] = useState<'overview' | 'projects'>('overview')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
+
+  // Sort permits by project value (highest first)
+  const sortedPermits = permits
+    .filter(permit => permit.projectvalue) // Only show permits with project values
+    .sort((a, b) => (b.projectvalue || 0) - (a.projectvalue || 0))
+
+  // Pagination logic
+  const totalPages = Math.ceil(sortedPermits.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentPermits = sortedPermits.slice(startIndex, endIndex)
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency',
+      currency: 'CAD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-CA', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const getPropertyUseIcon = (use: string) => {
+    switch (use.toLowerCase()) {
+      case 'residential uses':
+        return FaHome;
+      case 'commercial uses':
+        return FaBuilding;
+      case 'institutional uses':
+        return FaUniversity;
+      case 'industrial uses':
+        return FaIndustry;
+      case 'mixed uses':
+        return FaCity;
+      default:
+        return FaHammer;
+    }
+  };
+
+  const getPropertyUseColor = (use: string) => {
+    switch (use.toLowerCase()) {
+      case 'residential uses':
+        return 'bg-blue-500';
+      case 'commercial uses':
+        return 'bg-green-500';
+      case 'institutional uses':
+        return 'bg-purple-500';
+      case 'industrial uses':
+        return 'bg-orange-500';
+      case 'mixed uses':
+        return 'bg-yellow-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const getProjectSize = (projectValue: number) => {
+    if (projectValue < 2000000) return 'Small';
+    if (projectValue < 10000000) return 'Medium';
+    return 'Large';
+  };
+
+  const truncateDescription = (text: string, maxLength: number = 80) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
 
   return (
     <>
@@ -22,9 +110,8 @@ const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 z-40 h-full w-96 transform bg-card shadow-2xl transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } border-r border-border`}
+        className={`fixed left-0 top-0 z-40 h-full w-96 transform bg-card shadow-2xl transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } border-r border-border`}
       >
         <div className="flex h-full flex-col">
           {/* Header */}
@@ -37,33 +124,21 @@ const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
           <div className="flex border-b border-border bg-background/50">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors font-['Roboto_Mono',monospace] ${
-                activeTab === 'overview'
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors font-['Roboto_Mono',monospace] ${activeTab === 'overview'
                   ? 'border-b-2 border-primary text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
               Overview
             </button>
             <button
               onClick={() => setActiveTab('projects')}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors font-['Roboto_Mono',monospace] ${
-                activeTab === 'projects'
+              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors font-['Roboto_Mono',monospace] ${activeTab === 'projects'
                   ? 'border-b-2 border-primary text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
-              }`}
+                }`}
             >
               Projects
-            </button>
-            <button
-              onClick={() => setActiveTab('impact')}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors font-['Roboto_Mono',monospace] ${
-                activeTab === 'impact'
-                  ? 'border-b-2 border-primary text-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Impact
             </button>
           </div>
 
@@ -72,23 +147,10 @@ const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
             {activeTab === 'overview' && (
               <div className="space-y-6">
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-lg bg-primary/10 p-4 border border-primary/20">
-                    <PSmall className="text-muted-foreground">Total Projects</PSmall>
-                    <H4 className="mt-1 text-primary">24</H4>
-                  </div>
-                  <div className="rounded-lg bg-accent/10 p-4 border border-accent/20">
-                    <PSmall className="text-muted-foreground">Active</PSmall>
-                    <H4 className="mt-1 text-accent">12</H4>
-                  </div>
-                  <div className="rounded-lg bg-chart-1/10 p-4 border border-chart-1/20">
-                    <PSmall className="text-muted-foreground">Completed</PSmall>
-                    <H4 className="mt-1 text-chart-1">8</H4>
-                  </div>
-                  <div className="rounded-lg bg-chart-2/10 p-4 border border-chart-2/20">
-                    <PSmall className="text-muted-foreground">Planned</PSmall>
-                    <H4 className="mt-1 text-chart-2">4</H4>
-                  </div>
+
+                <div className="">
+                  <PSmall className="text-muted-foreground">Total Projects</PSmall>
+                  <H4 className="mt-1 text-primary">{permits.length}</H4>
                 </div>
 
                 {/* Area Info */}
@@ -134,107 +196,124 @@ const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
 
             {activeTab === 'projects' && (
               <div className="space-y-4">
-                <H4 className="text-foreground">Active Projects</H4>
-                
+
                 {/* Project Cards */}
-                {[
-                  { name: 'BC Cancer Center', type: 'Healthcare', status: 'Active', impact: 'High' },
-                  { name: 'Queen Elizabeth Park Renovation', type: 'Recreation', status: 'Planning', impact: 'Medium' },
-                  { name: 'Transit Hub Expansion', type: 'Infrastructure', status: 'Active', impact: 'High' },
-                ].map((project, idx) => (
-                  <div
-                    key={idx}
-                    className="rounded-lg border border-border bg-card p-4 transition-all hover:shadow-md hover:border-primary/50 cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <P className="font-semibold text-foreground">{project.name}</P>
-                        <PSmall className="mt-1 text-muted-foreground">{project.type}</PSmall>
-                      </div>
-                      <span className={`rounded-full px-2 py-1 text-xs font-medium ${
-                        project.impact === 'High' 
-                          ? 'bg-primary/20 text-primary' 
-                          : 'bg-accent/20 text-accent'
-                      }`}>
-                        {project.impact}
-                      </span>
-                    </div>
-                    <div className="mt-3 flex items-center gap-2">
-                      <div className={`h-2 w-2 rounded-full ${
-                        project.status === 'Active' ? 'bg-green-500' : 'bg-yellow-500'
-                      }`} />
-                      <PSmall className="text-muted-foreground">{project.status}</PSmall>
-                    </div>
+                {currentPermits.length > 0 ? (
+                  <div className="space-y-3">
+                    {currentPermits.map((permit) => {
+                      const primaryUse = permit.propertyuse?.[0] || 'Unknown';
+                      const IconComponent = getPropertyUseIcon(primaryUse);
+                      const isSelected = selectedPermit?._id === permit._id;
+                      
+                      return (
+                        <div
+                          key={permit._id}
+                          className={`rounded-lg border p-4 transition-all cursor-pointer hover:shadow-md ${
+                            isSelected 
+                              ? 'border-primary bg-primary/5 shadow-md' 
+                              : 'border-border bg-card hover:border-primary/50'
+                          }`}
+                          onClick={() => {
+                            // Allow deselection by clicking the same permit
+                            if (isSelected) {
+                              onPermitSelect?.(null);
+                            } else {
+                              onPermitSelect?.(permit);
+                            }
+                          }}
+                        >
+                          {/* Header */}
+                          <div className="flex items-start gap-3 mb-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getPropertyUseColor(primaryUse)}`}>
+                              <IconComponent className="text-white text-sm" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <P className="font-semibold text-card-foreground leading-tight">
+                                {permit.address}
+                              </P>
+                              <PSmall className="text-muted-foreground mt-1">
+                                {primaryUse}
+                              </PSmall>
+                            </div>
+                            <span className={`rounded-full px-2 py-1 text-xs font-medium ${
+                              getProjectSize(permit.projectvalue) === 'Large'
+                                ? 'bg-primary/20 text-primary'
+                                : getProjectSize(permit.projectvalue) === 'Medium'
+                                ? 'bg-accent/20 text-accent'
+                                : 'bg-muted text-muted-foreground'
+                            }`}>
+                              {getProjectSize(permit.projectvalue)}
+                            </span>
+                          </div>
+
+                          {/* Project Details */}
+                          <div className="space-y-2 border-t border-border pt-3">
+                            <div className="flex justify-between">
+                              <PSmall className="text-muted-foreground">Project Value:</PSmall>
+                              <PSmall className="font-semibold text-green-600">
+                                {formatCurrency(permit.projectvalue)}
+                              </PSmall>
+                            </div>
+                            <div className="flex justify-between">
+                              <PSmall className="text-muted-foreground">Issue Date:</PSmall>
+                              <PSmall className="font-medium text-card-foreground">
+                                {formatDate(permit.issuedate)}
+                              </PSmall>
+                            </div>
+                            {permit.projectdescription && (
+                              <div>
+                                <PSmall className="text-muted-foreground mb-1">Description:</PSmall>
+                                <PSmall className="text-card-foreground leading-relaxed">
+                                  {truncateDescription(permit.projectdescription)}
+                                </PSmall>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
+                ) : (
+                  <div className="text-center py-8">
+                    <PSmall className="text-muted-foreground">No projects available</PSmall>
+                  </div>
+                )}
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between border-t border-border pt-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      className="flex items-center gap-2"
+                    >
+                      <FaChevronLeft className="text-xs" />
+                      Previous
+                    </Button>
+                    
+                    <div className="flex items-center gap-2">
+                      <PSmall className="text-muted-foreground">
+                        Page {currentPage} of {totalPages}
+                      </PSmall>
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      className="flex items-center gap-2"
+                    >
+                      Next
+                      <FaChevronRight className="text-xs" />
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {activeTab === 'impact' && (
-              <div className="space-y-6">
-                <H4 className="text-foreground">Community Impact</H4>
-
-                {/* Impact Metrics */}
-                <div className="space-y-4">
-                  <div>
-                    <div className="mb-2 flex justify-between">
-                      <PSmall className="text-muted-foreground">Housing Availability</PSmall>
-                      <PSmall className="font-medium text-foreground">78%</PSmall>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[78%] bg-primary transition-all" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="mb-2 flex justify-between">
-                      <PSmall className="text-muted-foreground">Transportation Access</PSmall>
-                      <PSmall className="font-medium text-foreground">85%</PSmall>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[85%] bg-accent transition-all" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="mb-2 flex justify-between">
-                      <PSmall className="text-muted-foreground">Green Spaces</PSmall>
-                      <PSmall className="font-medium text-foreground">62%</PSmall>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[62%] bg-chart-1 transition-all" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="mb-2 flex justify-between">
-                      <PSmall className="text-muted-foreground">Healthcare Access</PSmall>
-                      <PSmall className="font-medium text-foreground">91%</PSmall>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[91%] bg-chart-2 transition-all" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Impact Summary */}
-                <div className="rounded-lg bg-muted/30 p-4 border border-border">
-                  <H4 className="mb-2 text-foreground">Overall Assessment</H4>
-                  <PMuted>
-                    Building projects in this area show positive impact on community infrastructure. 
-                    Transportation and healthcare access are strong, while green space development 
-                    could benefit from additional focus.
-                  </PMuted>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="border-t border-border bg-muted/30 px-6 py-4">
-            <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-              Generate Full Report
-            </Button>
           </div>
         </div>
       </div>
