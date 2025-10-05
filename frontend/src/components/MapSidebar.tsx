@@ -18,9 +18,12 @@ interface SidebarProps {
   permits?: any[]
   selectedPermit?: any
   onPermitSelect?: (permit: any) => void
+  showBoundaries?: boolean
+  onToggleBoundaries?: () => void
+  hoveredBoundary?: any
 }
 
-const MapSidebar = ({ isOpen, onToggle, permits = [], selectedPermit, onPermitSelect }: SidebarProps) => {
+const MapSidebar = ({ isOpen, onToggle, permits = [], selectedPermit, onPermitSelect, showBoundaries = false, onToggleBoundaries, hoveredBoundary }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'projects'>('overview')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
@@ -189,8 +192,40 @@ const MapSidebar = ({ isOpen, onToggle, permits = [], selectedPermit, onPermitSe
                     <Button variant="outline" className="w-full justify-start">
                       📍 Add Location
                     </Button>
+                    <Button 
+                      variant="outline" 
+                      className={`w-full justify-start ${showBoundaries ? 'bg-primary/10 border-primary' : ''}`}
+                      onClick={onToggleBoundaries}
+                    >
+                      🗺️ {showBoundaries ? 'Hide' : 'Show'} Boundaries
+                    </Button>
                   </div>
                 </div>
+
+                {/* Boundary Information */}
+                {hoveredBoundary && (
+                  <div>
+                    <H4 className="mb-3 text-foreground">Area Information</H4>
+                    <div className="rounded-lg border border-border bg-card p-4 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Area Code:</span>
+                        <span className="font-medium text-foreground">{hoveredBoundary.CFSAUID}</span>
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm text-muted-foreground">Region:</span>
+                        <span className="font-medium text-foreground text-right text-sm max-w-[200px]">
+                          {hoveredBoundary.PRNAME}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Land Area:</span>
+                        <span className="font-medium text-foreground">
+                          {hoveredBoundary.LANDAREA ? `${hoveredBoundary.LANDAREA.toFixed(2)} km²` : 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

@@ -18,6 +18,7 @@ import {
 
 import CustomMarker from './CustomMarker';
 import AmenityModal from './AmenityModal';
+import boundariesData from '@/data/boundaries2.geojson';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
@@ -25,12 +26,18 @@ type MapProps = {
   onPermitsLoad?: (permits: any[]) => void;
   onPermitSelect?: (permit: any) => void;
   selectedPermitId?: string | null;
+  showBoundaries?: boolean;
+  onBoundaryHover?: (boundary: any) => void;
+  onBoundaryLeave?: () => void;
 };
 
 const Map: React.FC<MapProps> = ({
   onPermitsLoad,
   onPermitSelect,
-  selectedPermitId: externalSelectedPermitId
+  selectedPermitId: externalSelectedPermitId,
+  showBoundaries = false,
+  onBoundaryHover,
+  onBoundaryLeave,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const [permits, setPermits] = React.useState<any[]>([]);
@@ -212,6 +219,80 @@ const Map: React.FC<MapProps> = ({
             'line-opacity': 0.8
           }
         });
+
+        // Add boundary source and layers
+        map.current.addSource('boundaries', {
+          type: 'geojson',
+          data: boundariesData
+        });
+
+        // Add boundary fill layer (initially hidden)
+        map.current.addLayer({
+          id: 'boundaries-fill',
+          type: 'fill',
+          source: 'boundaries',
+          paint: {
+            'fill-color': 'transparent',
+            'fill-opacity': 0
+          },
+          layout: {
+            'visibility': showBoundaries ? 'visible' : 'none'
+          }
+        });
+
+        // Add boundary outline layer with white borders
+        map.current.addLayer({
+          id: 'boundaries-outline',
+          type: 'line',
+          source: 'boundaries',
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': 2,
+            'line-opacity': 0.8
+          },
+          layout: {
+            'visibility': showBoundaries ? 'visible' : 'none'
+          }
+        });
+
+        // Add boundary highlight layer for hover effect
+        map.current.addLayer({
+          id: 'boundaries-highlight',
+          type: 'fill',
+          source: 'boundaries',
+          paint: {
+            'fill-color': '#3b82f6',
+            'fill-opacity': 0.3
+          },
+          filter: ['==', ['get', 'CFSAUID'], ''],
+          layout: {
+            'visibility': showBoundaries ? 'visible' : 'none'
+          }
+        });
+
+        // Add hover events for boundaries
+        map.current.on('mouseenter', 'boundaries-fill', (e) => {
+          if (e.features && e.features.length > 0) {
+            const feature = e.features[0];
+            map.current!.getCanvas().style.cursor = 'pointer';
+            
+            // Update highlight filter
+            map.current!.setFilter('boundaries-highlight', ['==', ['get', 'CFSAUID'], feature.properties?.CFSAUID || '']);
+            
+            // Call boundary hover callback
+            onBoundaryHover?.(feature.properties);
+          }
+        });
+
+        map.current.on('mouseleave', 'boundaries-fill', () => {
+          map.current!.getCanvas().style.cursor = '';
+          
+          // Clear highlight
+          map.current!.setFilter('boundaries-highlight', ['==', ['get', 'CFSAUID'], '']);
+          
+          // Call boundary leave callback
+          onBoundaryLeave?.();
+        });
       }
     });
 
@@ -342,6 +423,24 @@ const Map: React.FC<MapProps> = ({
       });
     }
   }, [currentDevelopmentCoordinates]);
+
+  // Effect to handle boundary visibility changes
+  useEffect(() => {
+    if (!map.current) return;
+
+    const visibility = showBoundaries ? 'visible' : 'none';
+    
+    // Update visibility for all boundary layers
+    if (map.current.getLayer('boundaries-fill')) {
+      map.current.setLayoutProperty('boundaries-fill', 'visibility', visibility);
+    }
+    if (map.current.getLayer('boundaries-outline')) {
+      map.current.setLayoutProperty('boundaries-outline', 'visibility', visibility);
+    }
+    if (map.current.getLayer('boundaries-highlight')) {
+      map.current.setLayoutProperty('boundaries-highlight', 'visibility', visibility);
+    }
+  }, [showBoundaries]);
 
   return (
     <>
