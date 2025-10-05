@@ -38,16 +38,16 @@ const Hero = () => {
 
           {/* Main Heading */}
           <H1 className="mb-6 bg-gradient-to-br from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
-            Understand how
+            Visualize how
             <br />
             <span className="text-blue-200">
-              building projects impact communities
+              development projects impact communities
             </span>
           </H1>
 
           {/* Lead Paragraph */}
-          <Lead className="mx-auto mb-10 max-w-xl text-muted-foreground">
-            We analyze public data to reveal the real impact of building projects on neighborhoods and communities.
+          <Lead className="mx-auto mb-10 max-w-xl text-muted-foreground border-2 bg-background/50 rounded-lg backdrop-blur-sm" >
+            We analyze public data to reveal the real impact of development projects on neighborhoods and communities.
           </Lead>
 
           {/* Call-to-Action Buttons */}
