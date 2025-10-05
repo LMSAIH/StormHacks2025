@@ -9,54 +9,56 @@ const Hero = () => {
   return (
     <section
       id="platform"
-      className="relative min-h-screen w-full overflow-hidden scroll-mt-28 bg-transparent lg:scroll-mt-36"
+      className="relative min-h-screen w-full overflow-hidden scroll-mt-28 bg-background lg:scroll-mt-36"
     >
       {/* Single Beautiful Dotted Map with Global Markers */}
       <div className="pointer-events-none absolute inset-0">
         <Suspense fallback={<div className="absolute inset-0" />}>
-          <DottedMap
-            width={280}
-            height={140}
-            mapSamples={8000}
-            dotRadius={0.50}
-            className="text-foreground/30 transition-all duration-700"
-            markers={[
-              // Vancouver (Home - Featured)
-              { lat: 49.2827, lng: -123.1207, size: 2 },
-              
-              // North America
-              { lat: 37.7749, lng: -122.4194, size: 1 }, // San Francisco
-              { lat: 40.7128, lng: -74.006, size: 1 },   // New York
-              { lat: 43.6532, lng: -79.3832, size: 1 },  // Toronto
-              { lat: 19.4326, lng: -99.1332, size: 1 },  // Mexico City
-              
-              // Europe
-              { lat: 51.5074, lng: -0.1278, size: 1 },   // London
-              { lat: 48.8566, lng: 2.3522, size: 1 },    // Paris
-              { lat: 52.52, lng: 13.405, size: 1 },      // Berlin
-              { lat: 41.9028, lng: 12.4964, size: 1 },   // Rome
-              
-              // Asia
-              { lat: 35.6762, lng: 139.6503, size: 1.9 },  // Tokyo
-              { lat: 37.5665, lng: 126.978, size: 1.7 },   // Seoul
-              { lat: 22.3193, lng: 114.1694, size: 1.6 },  // Hong Kong
-              { lat: 1.3521, lng: 103.8198, size: 1.6 },   // Singapore
-              { lat: 28.6139, lng: 77.209, size: 1.5 },    // New Delhi
-              
-              // Oceania
-              { lat: -33.8688, lng: 151.2093, size: 1 }, // Sydney
-              { lat: -37.8136, lng: 144.9631, size: 1 }, // Melbourne
-              
-              // South America
-              { lat: -23.5505, lng: -46.6333, size: 1 }, // São Paulo
-              { lat: -34.6037, lng: -58.3816, size: 1 }, // Buenos Aires
-              
-              // Africa
-              { lat: -33.9249, lng: 18.4241, size: 1 },  // Cape Town
-              { lat: -1.2921, lng: 36.8219, size: 1 },   // Nairobi
-            ]}
-            markerColor="#64B5F6"
-          />
+          <div className="animate-fade-in-dots">
+            <DottedMap
+              width={280}
+              height={140}
+              mapSamples={8000}
+              dotRadius={0.50}
+              className="text-foreground/30 transition-all duration-700"
+              markers={[
+                // Vancouver (Home - Featured)
+                { lat: 49.2827, lng: -123.1207, size: 2 },
+                
+                // North America
+                { lat: 37.7749, lng: -122.4194, size: 1 }, // San Francisco
+                { lat: 40.7128, lng: -74.006, size: 1 },   // New York
+                { lat: 43.6532, lng: -79.3832, size: 1 },  // Toronto
+                { lat: 19.4326, lng: -99.1332, size: 1 },  // Mexico City
+                
+                // Europe
+                { lat: 51.5074, lng: -0.1278, size: 1 },   // London
+                { lat: 48.8566, lng: 2.3522, size: 1 },    // Paris
+                { lat: 52.52, lng: 13.405, size: 1 },      // Berlin
+                { lat: 41.9028, lng: 12.4964, size: 1 },   // Rome
+                
+                // Asia
+                { lat: 35.6762, lng: 139.6503, size: 1.9 },  // Tokyo
+                { lat: 37.5665, lng: 126.978, size: 1.7 },   // Seoul
+                { lat: 22.3193, lng: 114.1694, size: 1.6 },  // Hong Kong
+                { lat: 1.3521, lng: 103.8198, size: 1.6 },   // Singapore
+                { lat: 28.6139, lng: 77.209, size: 1.5 },    // New Delhi
+                
+                // Oceania
+                { lat: -33.8688, lng: 151.2093, size: 1 }, // Sydney
+                { lat: -37.8136, lng: 144.9631, size: 1 }, // Melbourne
+                
+                // South America
+                { lat: -23.5505, lng: -46.6333, size: 1 }, // São Paulo
+                { lat: -34.6037, lng: -58.3816, size: 1 }, // Buenos Aires
+                
+                // Africa
+                { lat: -33.9249, lng: 18.4241, size: 1 },  // Cape Town
+                { lat: -1.2921, lng: 36.8219, size: 1 },   // Nairobi
+              ]}
+              markerColor="#64B5F6"
+            />
+          </div>
         </Suspense>
       </div>
 
