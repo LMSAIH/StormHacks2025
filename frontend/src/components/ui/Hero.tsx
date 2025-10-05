@@ -7,7 +7,7 @@ const DottedMap = lazy(() => import("./dotted-map").then(module => ({ default: m
 
 const Hero = () => {
   return (
-    <section id="platform" className="relative min-h-screen w-full overflow-hidden bg-background group">
+    <section id="platform" className="relative min-h-screen w-full overflow-hidden group">
       {/* Single Beautiful Dotted Map with Global Markers */}
       <div className="absolute inset-0">
         <Suspense fallback={<div className="absolute inset-0" />}>
@@ -23,13 +23,8 @@ const Hero = () => {
         </Suspense>
       </div>
 
-      {/* Gradient Overlays for depth - Enhanced */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/60 to-background transition-all duration-700 :from-background/8" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/8 via-transparent to-accent/8 transition-all duration-700" />
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-background/40 to-transparent transition-all duration-700" />
-      
       {/* Radial gradient for spotlight effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background))_100%)] transition-all duration-700 group-hover:bg-[radial-gradient(ellipse_at_center,transparent_30%,hsl(var(--background))_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_100%)] transition-all duration-700 group-hover:bg-[radial-gradient(ellipse_at_center,transparent_30%,transparent_100%)]" />
 
       {/* Content Container */}
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-20 sm:px-6 lg:px-8">
