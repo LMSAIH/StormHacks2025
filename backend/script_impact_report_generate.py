@@ -97,7 +97,7 @@ async def process_permits_batch(permits_batch, batch_num, total_batches):
     # Create async tasks for the batch
     tasks = []
     for permit in permits_batch:
-        task = generate_impact_analysis(permit)
+        task = asyncio.create_task(generate_impact_analysis(permit))
         tasks.append((permit, task))
     
     # Execute all tasks in the batch concurrently
@@ -130,7 +130,7 @@ async def process_all_permits():
         return
     
     # Process permits in batches to avoid overwhelming the API
-    batch_size = 10  # Process 10 permits concurrently
+    batch_size = 50  # Process 50 permits concurrently
     processed_count = 0
     successful_count = 0
     failed_count = 0
