@@ -100,7 +100,7 @@ const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-2 bg-background/50 px-8 py-6 text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
+              className="border-2 rounded-full bg-background/50 px-8 py-6 text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
             >
               Learn More
             </Button>
