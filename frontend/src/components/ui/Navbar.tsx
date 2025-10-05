@@ -1,8 +1,24 @@
 import { Button } from "./button"
+import { useEffect, useState } from "react"
 
 const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-background/20 backdrop-blur-md shadow-md border border-b">
+    <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all ${
+      isScrolled 
+        ? "bg-background/20 backdrop-blur-md shadow-md border border-b" 
+        : "bg-transparent"
+    }`}>
       <div className="mx-auto flex  items-center justify-between">
         {/* Left - Logo/Brand (optional space) */}
         <div className="flex-1" />
