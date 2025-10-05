@@ -4,15 +4,13 @@ import type { ProjectCardProps } from './MapSidebar.types';
 import { 
   formatCurrency, 
   formatDate, 
-  getPropertyUseIcon, 
-  getPropertyUseColor, 
   getProjectSize, 
   truncateDescription 
 } from './MapSidebar.utils';
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ permit, isSelected, onSelect }) => {
-  const primaryUse = permit.propertyuse?.[0] || 'Unknown';
-  const IconComponent = getPropertyUseIcon(primaryUse);
+
+
 
   return (
     <div

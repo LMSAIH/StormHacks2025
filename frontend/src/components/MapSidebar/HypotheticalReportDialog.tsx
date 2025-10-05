@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 import { H4 } from '../ui/typography';
 import { generateHypotheticalImpactReport } from '../../api/requests';
 import type { HypotheticalDevelopmentRequest } from '../../api/requests';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+
 
 interface HypotheticalReportDialogProps {
   isOpen: boolean;
