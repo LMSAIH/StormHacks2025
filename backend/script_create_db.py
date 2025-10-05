@@ -141,6 +141,118 @@ def get_data(url: str) -> None:
 	# print(f"\nSaved {len(flat_records)} development permit records to {out_path}")
 	return flat_records
 
+def get_data_parks(url: str) -> None:
+	# We'll store each page's normalized records as an entry in this list
+	development_permits = []
+
+	# determine limit from URL if present
+	import re
+
+	m = re.search(r"[?&]limit=(\d+)", url)
+	limit = int(m.group(1)) if m else 20
+
+	# remove any existing offset param (we'll append offsets ourselves)
+	base = re.sub(r"([?&])offset=\d+", r"\1", url).rstrip("&")
+
+	# Fetch next 10 offsets (pages)
+	pages = 2
+	for i in range(pages):
+		offset = i * limit
+		sep = "&" if "?" in base else "?"
+		page_url = f"{base}{sep}offset={offset}"
+		print(f"Fetching page {i+1} at offset={offset}...")
+
+		req = Request(page_url, headers={"User-Agent": "python-fetch-script/1.0"})
+		try:
+			with urlopen(req, timeout=30) as resp:
+				data = resp.read()
+		except HTTPError as e:
+			print(f"HTTP error: {e.code} {e.reason}", file=sys.stderr)
+			break
+		except URLError as e:
+			print(f"URL error: {e.reason}", file=sys.stderr)
+			break
+
+		try:
+			parsed = json.loads(data)
+		except Exception as e:
+			print(f"Failed to parse JSON: {e}", file=sys.stderr)
+			print(data.decode(errors="replace"), file=sys.stderr)
+			break
+
+		# Extract records from 'results' or 'records' when present
+		records = []
+		if isinstance(parsed, dict):
+			if "results" in parsed and isinstance(parsed["results"], list):
+				records = parsed["results"]
+			elif "records" in parsed and isinstance(parsed["records"], list):
+				records = parsed["records"]
+
+		if not records and isinstance(parsed, list):
+			records = parsed
+
+		# Normalize each record to its 'fields' dict when available
+		normalized = []
+		for item in records:
+			if isinstance(item, dict):
+				if "record" in item and isinstance(item["record"], dict):
+					rec = item["record"].get("fields") or item["record"]
+				elif "fields" in item:
+					rec = item.get("fields") or item
+				else:
+					rec = item
+				normalized.append(rec)
+			else:
+				normalized.append(item)
+
+		# Append the completed page (one list) to development_permits
+		development_permits.append(normalized)
+
+	# After all pages have been fetched, flatten and save once
+	flat_records = []
+	for page in development_permits:
+		if isinstance(page, list):
+			flat_records.extend(page)
+		else:
+			flat_records.append(page)
+
+	# out_path = "development_permits.json"
+	# with open(out_path, "w", encoding="utf-8") as f:
+	# 	json.dump(flat_records, f, ensure_ascii=False, indent=2)
+
+	# print(f"\nSaved {len(flat_records)} development permit records to {out_path}")
+	return flat_records
+
+def transform_parks_data(records):
+	"""Transform parks data from googlemapdest format to geom GeoJSON format"""
+	transformed_records = []
+	for record in records:
+		if isinstance(record, dict) and 'googlemapdest' in record:
+			# Create a copy of the record
+			new_record = record.copy()
+			
+			# Transform googlemapdest to geom format
+			if 'googlemapdest' in new_record and isinstance(new_record['googlemapdest'], dict):
+				lon = new_record['googlemapdest'].get('lon')
+				lat = new_record['googlemapdest'].get('lat')
+				
+				if lon is not None and lat is not None:
+					new_record['geom'] = {
+						"type": "Feature",
+						"geometry": {
+							"coordinates": [lon, lat],
+							"type": "Point"
+						}
+					}
+				
+				# Remove the original googlemapdest field
+				del new_record['googlemapdest']
+			
+			transformed_records.append(new_record)
+		else:
+			transformed_records.append(record)
+	
+	return transformed_records
 
 def insert_records_to_collection(collection, records, unique_key: str | None = None, upsert: bool = False):
 	"""Insert a list of dict records into a pymongo Collection.
@@ -195,7 +307,6 @@ def insert_records_to_collection(collection, records, unique_key: str | None = N
 
 if __name__ == "__main__":
     insert_records_to_collection(development_permits_collection, get_data(DEVELOPMENT_PERMITS_URL))
-    insert_records_to_collection(parks_collection, get_data(PARKS_URL))
     insert_records_to_collection(public_art_collection, get_data(PUBLIC_ART_URL))
     insert_records_to_collection(community_centers_collection, get_data(COMMUNITY_CENTERS_URL))
     insert_records_to_collection(libraries_collection, get_data(LIBRARIES_URL))
@@ -204,3 +315,8 @@ if __name__ == "__main__":
     insert_records_to_collection(rapid_transit_stations_collection, get_data(RAPID_TRANSIT_STATIONS_URL))
     insert_records_to_collection(schools_collection, get_data(SCHOOLS_URL))
     insert_records_to_collection(fire_halls_collection, get_data(FIRE_HALLS_URL))
+
+    # Transform parks data from googlemapdest to geom format before inserting
+    parks_data = get_data(PARKS_URL)
+    transformed_parks_data = transform_parks_data(parks_data)
+    insert_records_to_collection(parks_collection, transformed_parks_data)
