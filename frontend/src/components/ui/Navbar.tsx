@@ -1,5 +1,6 @@
 import { Button } from "./button"
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -25,24 +26,24 @@ const Navbar = () => {
 
         {/* Center - Navigation Links */}
         <div className="flex items-center gap-8">
-          <a
-            href="#platform"
+          <Link
+            to="#platform"
             className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Platform
-          </a>
-          <a
-            href="#solutions"
+          </Link>
+          <Link
+            to="#solutions"
             className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Solutions
-          </a>
-          <a
-            href="#impact"
+          </Link>
+          <Link
+            to="#impact"
             className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Impact
-          </a>
+          </Link>
         </div>
 
         {/* Right - Login & CTA */}
@@ -52,7 +53,7 @@ const Navbar = () => {
             className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg"
             asChild
             >
-            <a href="/Visualization">Go to App</a>
+            <Link to="/visualization">Go to App</Link>
             </Button>
         </div>
       </div>

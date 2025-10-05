@@ -1,6 +1,7 @@
 import { lazy } from "react"
 import { H1, Lead, P } from "./typography"
 import { Button } from "./button"
+import { Link } from "react-router-dom"
 
 // Lazy load the DottedMap component
 const DottedMap = lazy(() => import("./dotted-map").then(module => ({ default: module.DottedMap })))
@@ -53,17 +54,21 @@ const Hero = () => {
             <Button
               size="lg"
               className="group relative overflow-hidden bg-primary px-8 py-6 text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20"
+              asChild
             >
-              <span className="relative z-10">Start Analyzing</span>
-              <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity" />
+              <Link to="/Visualization">
+                <span className="relative z-10">Start Analyzing</span>
+                <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity" />
+              </Link>
             </Button>
             
             <Button
               size="lg"
               variant="outline"
               className="border-2 bg-background/50 px-8 py-6 text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
+              asChild
             >
-              Learn More
+              <Link to="#solutions">Learn More</Link>
             </Button>
           </div>
 
