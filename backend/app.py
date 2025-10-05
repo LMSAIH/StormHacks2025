@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from typing import Optional, List
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Body, HTTPException, status
 from fastapi.responses import Response
 from pydantic import ConfigDict, BaseModel, Field, EmailStr
@@ -19,6 +19,14 @@ print(os.getenv("MONGODB_URL"))
 app = FastAPI(
     title="StormHacks2025 Backend",
     summary="Backend API for StormHacks2025 project",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 mongodb_url = os.getenv("MONGODB_URL")
