@@ -155,7 +155,7 @@ def get_data_parks(url: str) -> None:
 	base = re.sub(r"([?&])offset=\d+", r"\1", url).rstrip("&")
 
 	# Fetch next 10 offsets (pages)
-	pages = 2
+	pages = 5
 	for i in range(pages):
 		offset = i * limit
 		sep = "&" if "?" in base else "?"
