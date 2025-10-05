@@ -32,14 +32,15 @@ const Navbar = () => {
         {/* Right - Login & CTA */}
         <div className="flex flex-1 items-center justify-end gap-4">
           <button className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-accent after:transition-all hover:after:w-full">
-            Login
+            <a href="placeholder.jpeg">Login</a>
           </button>
-          <Button
+            <Button
             size="sm"
             className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg"
-          >
-            Go to App
-          </Button>
+            asChild
+            >
+            <a href="/Visualization">Go to App</a>
+            </Button>
         </div>
       </div>
     </nav>
