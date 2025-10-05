@@ -3,11 +3,13 @@ import { H3, H4, P, PSmall, PMuted } from './ui/typography'
 import { Button } from './ui/button'
 
 interface SidebarProps {
-  isOpen: boolean
-  onToggle: () => void
+  isOpen: boolean;
+  onToggle: () => void;
+  showBoundaries?: boolean;
+  onToggleBoundaries?: () => void;
 }
 
-const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
+const MapSidebar = ({ isOpen, onToggle, showBoundaries = false, onToggleBoundaries }: SidebarProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'projects' | 'impact'>('overview')
 
   return (
@@ -120,6 +122,13 @@ const MapSidebar = ({ isOpen, onToggle }: SidebarProps) => {
                   <div className="space-y-2">
                     <Button variant="outline" className="w-full justify-start">
                       📊 Generate Report
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={onToggleBoundaries}
+                    >
+                      {showBoundaries ? '🗺️ Hide Boundaries' : '🗺️ Show Boundaries'}
                     </Button>
                     <Button variant="outline" className="w-full justify-start">
                       🔍 Filter Projects

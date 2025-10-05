@@ -7,6 +7,7 @@ import RightPanel from '../components/RightPanel';
 
 const Visualization: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [showBoundaries, setShowBoundaries] = useState(false);
     const [currentDevelopment, setCurrentDevelopment] = useState(null);
     const [currentDevelopmentCoordinates, setCurrentDevelopmentCoordinates] = useState<[number, number] | null>(null);
 
@@ -14,7 +15,12 @@ const Visualization: React.FC = () => {
         // Make this a full-height flex container
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', position: 'relative' }}>
             {/* Sidebar */}
-            <MapSidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+            <MapSidebar 
+                isOpen={isSidebarOpen} 
+                onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+                showBoundaries={showBoundaries}
+                onToggleBoundaries={() => setShowBoundaries(!showBoundaries)}
+            />
 
             {/* Map Container */}
             <div style={{ flexGrow: 1, position: 'relative' }}>
@@ -22,9 +28,9 @@ const Visualization: React.FC = () => {
                     setCurrentDevelopment={setCurrentDevelopment}
                     setCurrentDevelopmentCoordinates={setCurrentDevelopmentCoordinates}
                     currentDevelopmentCoordinates={currentDevelopmentCoordinates}
+                    showBoundaries={showBoundaries}
                 />
             </div>
-        <RightPanel details={currentDevelopment} />
         </div>
     );
 };
