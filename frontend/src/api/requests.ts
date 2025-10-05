@@ -10,6 +10,18 @@ export interface LocationParams {
   distance: number;
 }
 
+// Hypothetical development request interface
+export interface HypotheticalDevelopmentRequest {
+  longitude: number;
+  latitude: number;
+  project_description: string;
+  project_value?: number;
+  address?: string;
+  property_use?: string[];
+  specific_use_category?: string[];
+  max_distance_km?: number;
+}
+
 /**
  * Fetch development permits based on location and distance
  * @param params - Object containing longitude, latitude, and distance
@@ -74,7 +86,36 @@ export const getImpactReport = async (permitId: string): Promise<any> => {
   }
 };
 
+/**
+ * Generate a hypothetical impact report for a proposed development
+ * @param request - Object containing development details and coordinates
+ * @returns Promise resolving to hypothetical impact analysis data
+ */
+export const generateHypotheticalImpactReport = async (request: HypotheticalDevelopmentRequest): Promise<any> => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/hypothetical-impact-report`, request, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error generating hypothetical impact report:', error);
+    throw error;
+  }
+};
+
 // Example usage:
 // const permits = await getDevelopmentPermits({ lon: -123.15525, lat: 49.249783, distance: 0.5 });
 // const amenities = await getAmenities({ lon: -123.15525, lat: 49.249783, distance: 1 });
 // const impactReport = await getImpactReport('68e1f303607bd68421537e47');
+// const hypotheticalReport = await generateHypotheticalImpactReport({
+//   longitude: -123.1207,
+//   latitude: 49.2827,
+//   project_description: "To construct a 6-storey building with 45 dwelling units",
+//   project_value: 15000000,
+//   address: "123 Main Street, Vancouver, BC",
+//   property_use: ["Residential Uses"],
+//   specific_use_category: ["Multiple Dwelling"],
+//   max_distance_km: 1.0
+// });

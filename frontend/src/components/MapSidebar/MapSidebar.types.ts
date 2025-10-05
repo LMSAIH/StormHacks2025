@@ -8,6 +8,13 @@ export interface SidebarProps {
   onPermitSelect?: (permit: any) => void
   showBoundaries?: boolean
   onToggleBoundaries?: () => void
+  isPinDropMode?: boolean
+  onPinDropModeToggle?: () => void
+  pinnedLocation?: {lon: number, lat: number} | null
+  onClearPin?: () => void
+  onHypotheticalReportGenerated?: (report: any) => void
+  maxDisplayCount?: number | null
+  onMaxDisplayCountChange?: (count: number | null) => void
 }
 
 export interface Permit {
@@ -30,12 +37,21 @@ export interface OverviewTabProps {
   permits: any[]
   showBoundaries: boolean
   onToggleBoundaries?: () => void
+  isPinDropMode?: boolean
+  onPinDropModeToggle?: () => void
+  pinnedLocation?: {lon: number, lat: number} | null
+  onClearPin?: () => void
+  onHypotheticalReportGenerated?: (report: any) => void
+  maxDisplayCount?: number | null
+  onMaxDisplayCountChange?: (count: number | null) => void
 }
 
 export interface ProjectsTabProps {
   permits: any[]
   selectedPermit?: any
   onPermitSelect?: (permit: any) => void
+  maxDisplayCount?: number | null
+  onMaxDisplayCountChange?: (count: number | null) => void
 }
 
 export interface ProjectCardProps {
