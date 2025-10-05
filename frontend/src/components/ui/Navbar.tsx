@@ -26,24 +26,24 @@ const Navbar = () => {
 
         {/* Center - Navigation Links */}
         <div className="flex items-center gap-8">
-          <Link
-            to="#platform"
+          <a
+            href="#platform"
             className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Platform
-          </Link>
-          <Link
-            to="#solutions"
+          </a>
+          <a
+            href="#solutions"
             className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Solutions
-          </Link>
-          <Link
-            to="#impact"
+          </a>
+          <a
+            href="#impact"
             className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Impact
-          </Link>
+          </a>
         </div>
 
         {/* Right - Login & CTA */}
