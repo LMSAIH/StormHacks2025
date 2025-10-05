@@ -236,3 +236,49 @@ async def get_amenities(
         }
     }
     
+@app.get("/impact_reports/{permit_id}")
+async def get_impact_reports(permit_id: str):
+    """
+    Get an impact report by original permit ID.
+    
+    Args:
+        permit_id: The original permit ID to search for
+        
+    Returns:
+        JSON response with the impact report data
+        
+    Raises:
+        HTTPException: 404 if report not found
+        
+    Examples:
+        GET /impact_reports/68e1f303607bd68421537e47
+    """
+    impact_reports_collection = db.get_collection("impact_reports")
+    
+    try:
+        # Find the report by original_permit_id
+        report = impact_reports_collection.find_one({"original_permit_id": permit_id})
+        
+        if not report:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Impact report for permit ID '{permit_id}' not found"
+            )
+        
+        # Convert ObjectId to string for JSON serialization
+        report["_id"] = str(report["_id"])
+        
+        return {
+            "success": True,
+            "permit_id": permit_id,
+            "report": report
+        }
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving impact report: {str(e)}"
+        )
