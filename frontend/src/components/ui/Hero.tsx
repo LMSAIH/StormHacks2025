@@ -89,10 +89,10 @@ const Hero = () => {
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
               size="lg"
-              className="group relative overflow-hidden bg-primary px-8 py-6 text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20"
+              className="group relative overflow-hidden rounded-full bg-white px-8 py-6 text-base font-semibold text-primary-foreground transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_30px_70px_-28px_rgba(100,181,246,0.85)]"
             >
-              <span className="relative z-10">Start Analyzing</span>
-              <div className="absolute inset-0 -z-0 bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity group-hover:opacity-100" />
+              <span className="relative z-10 tracking-wide">Start Analyzing</span>
+              <div className="absolute inset-[-60%] -z-10 rotate-12 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Button>
             
             <Button
