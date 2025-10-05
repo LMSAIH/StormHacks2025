@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API base URL
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://throbbing-rain-c8ee.email4leit.workers.dev/api';
 
 // API request parameters interface
 export interface LocationParams {
