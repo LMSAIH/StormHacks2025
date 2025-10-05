@@ -6,8 +6,10 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 from pymongo import MongoClient
 
+DEFAULT_PAGES = 3  # Default number of pages to fetch if not specified
+
 DEVELOPMENT_PERMITS_URL = (
-    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?select=projectvalue%2C%20address%2C%20propertyuse%2C%20specificusecategory%2C%20geolocalarea%2C%20geom%2C%20permitnumbercreateddate%2C%20issuedate%2C%20permitelapseddays&where=issueyear%20%3D%202025%20AND%20typeofwork%20like%20"New%20Building"%20AND%20projectvalue%20>%20500000&order_by=issuedate%20DESC&limit=100&lang=en'
+    'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/issued-building-permits/records?select=projectvalue%2C%20address%2C%20projectdescription%2C%20propertyuse%2C%20specificusecategory%2C%20geolocalarea%2C%20geom%2C%20permitnumbercreateddate%2C%20issuedate%2C%20permitelapseddays&where=issueyear%20%3D%202025%20AND%20typeofwork%20like%20"New%20Building"%20AND%20projectvalue%20>%20500000&order_by=issuedate%20DESC&limit=100&lang=en'
 )
 PARKS_URL = (
     'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/parks/records?select=name%2C%20streetnumber%2C%20streetname%2C%20neighbourhoodname%2C%20hectare%2C%20googlemapdest&limit=100'
@@ -59,7 +61,7 @@ schools_collection = db.get_collection("schools")
 fire_halls_collection = db.get_collection("fire_halls")
 
 
-def get_data(url: str) -> None:
+def get_data(url: str, pages: int = DEFAULT_PAGES) -> None:
 	# We'll store each page's normalized records as an entry in this list
 	development_permits = []
 
@@ -72,8 +74,7 @@ def get_data(url: str) -> None:
 	# remove any existing offset param (we'll append offsets ourselves)
 	base = re.sub(r"([?&])offset=\d+", r"\1", url).rstrip("&")
 
-	# Fetch next 10 offsets (pages)
-	pages = 2
+	# Fetch specified number of pages
 	for i in range(pages):
 		offset = i * limit
 		sep = "&" if "?" in base else "?"
@@ -155,7 +156,7 @@ def get_data_parks(url: str) -> None:
 	base = re.sub(r"([?&])offset=\d+", r"\1", url).rstrip("&")
 
 	# Fetch next 10 offsets (pages)
-	pages = 2
+	pages = DEFAULT_PAGES
 	for i in range(pages):
 		offset = i * limit
 		sep = "&" if "?" in base else "?"
@@ -306,7 +307,8 @@ def insert_records_to_collection(collection, records, unique_key: str | None = N
 
 
 if __name__ == "__main__":
-    insert_records_to_collection(development_permits_collection, get_data(DEVELOPMENT_PERMITS_URL))
+    insert_records_to_collection(development_permits_collection, get_data(DEVELOPMENT_PERMITS_URL, 1))
+    
     insert_records_to_collection(public_art_collection, get_data(PUBLIC_ART_URL))
     insert_records_to_collection(community_centers_collection, get_data(COMMUNITY_CENTERS_URL))
     insert_records_to_collection(libraries_collection, get_data(LIBRARIES_URL))

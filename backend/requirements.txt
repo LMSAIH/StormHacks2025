@@ -4,3 +4,4 @@ pymongo
 python-dotenv
 typing-extensions
 uvicorn[standard]
+openai
