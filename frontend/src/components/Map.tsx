@@ -190,16 +190,16 @@ const Map: React.FC<MapProps> = ({
           }
         });
 
-        // Add fill layer for the development zone
-        map.current.addLayer({
-          id: 'development-zone-fill',
-          type: 'fill',
-          source: 'development-zone',
-          paint: {
-            'fill-color': '#3b82f6',
-            'fill-opacity': 0.2
-          }
-        });
+          // Add development zone layers
+          map.current.addLayer({
+            id: 'development-zone-fill',
+            type: 'fill',
+            source: 'development-zone',
+            paint: {
+              'fill-color': '#3b82f6',
+              'fill-opacity': 0.2
+            }
+          });
 
         // Add outline layer for the development zone
         map.current.addLayer({
