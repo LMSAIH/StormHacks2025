@@ -2,7 +2,7 @@
 import React, { forwardRef, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { AnimatedBeam } from "@/components/ui/shadcn-io/animated-beam";
-import { FaUser, FaTree, FaNewspaper, FaPaintBrush, FaBuilding, FaBookOpen, FaChurch, FaToilet, FaTrain, FaSchool, FaFireExtinguisher } from "react-icons/fa";
+import { FaUsers, FaTree, FaNewspaper, FaPaintBrush, FaBuilding, FaBookOpen, FaChurch, FaToilet, FaTrain, FaSchool, FaFireExtinguisher } from "react-icons/fa";
 
 
 
@@ -187,43 +187,49 @@ const Beaming = () => {
       </div>
 
       {/* Circles layer - rendered on top with higher z-index */}
-      <div className="flex size-full max-w-lg flex-row items-stretch justify-between gap-10 relative z-20">
+      <div className="flex size-full max-w-4xl flex-row items-stretch justify-between gap-8 relative z-20">
         <div className="flex flex-col justify-center">
           <Circle ref={OpenDataRef} className="size-16" label="Vancouver Open Data">
             <img src="cityOfVancouver.svg" alt="City of Vancouver" className="size-full" />
           </Circle>
         </div>
-        <div className="flex flex-col justify-center gap-2">
-          <Circle ref={PermitsRef} label="Development Permits">
-            <FaNewspaper size={75} className="text-black"/>
-          </Circle>
-          <Circle ref={ParksRef} label="Parks">
-            <FaTree size={75} className="text-green-600"/>
-          </Circle>
-          <Circle ref={PublicArtRef} label="Public Art">
-            <FaPaintBrush size={75} className="text-orange-900"/>
-          </Circle>
-          <Circle ref={CommunityCentreRef} label="Community Centres">
-            <FaBuilding size={75} className="text-blue-600"/>
-          </Circle>
-          <Circle ref={LibrariesRef} label="Libraries">
-            <FaBookOpen size={75} className="text-yellow-400"/>
-          </Circle>
-          <Circle ref={CulturalSpacesRef} label="Cultural Spaces">
-            <FaChurch size={75} className="text-purple-600"/>
-          </Circle>
-          <Circle ref={PublicWashroomRef} label="Public Washrooms">
-            <FaToilet size={75} className="text-gray-600"/>
-          </Circle>
-          <Circle ref={TransitStationsRef} label="Transit Stations">
-            <FaTrain size={75} className="text-blue-600"/>
-          </Circle>
-          <Circle ref={SchoolsRef} label="Schools">
-            <FaSchool size={75} className="text-yellow-300"/>
-          </Circle>
-          <Circle ref={FireHallsRef} label="Fire Halls">
-            <FaFireExtinguisher size={75} className="text-red-800"/>
-          </Circle>
+        <div className="flex flex-row justify-center gap-4">
+          {/* First column */}
+          <div className="flex flex-col justify-center gap-2">
+            <Circle ref={PermitsRef} label="Development Permits">
+              <FaNewspaper size={75} className="text-black"/>
+            </Circle>
+            <Circle ref={ParksRef} label="Parks">
+              <FaTree size={75} className="text-green-600"/>
+            </Circle>
+            <Circle ref={PublicArtRef} label="Public Art">
+              <FaPaintBrush size={75} className="text-orange-900"/>
+            </Circle>
+            <Circle ref={CommunityCentreRef} label="Community Centres">
+              <FaBuilding size={75} className="text-blue-600"/>
+            </Circle>
+            <Circle ref={LibrariesRef} label="Libraries">
+              <FaBookOpen size={75} className="text-yellow-400"/>
+            </Circle>
+          </div>
+          {/* Second column */}
+          <div className="flex flex-col justify-center gap-2">
+            <Circle ref={CulturalSpacesRef} label="Cultural Spaces">
+              <FaChurch size={75} className="text-purple-600"/>
+            </Circle>
+            <Circle ref={PublicWashroomRef} label="Public Washrooms">
+              <FaToilet size={75} className="text-gray-600"/>
+            </Circle>
+            <Circle ref={TransitStationsRef} label="Transit Stations">
+              <FaTrain size={75} className="text-blue-600"/>
+            </Circle>
+            <Circle ref={SchoolsRef} label="Schools">
+              <FaSchool size={75} className="text-yellow-300"/>
+            </Circle>
+            <Circle ref={FireHallsRef} label="Fire Halls">
+              <FaFireExtinguisher size={75} className="text-red-800"/>
+            </Circle>
+          </div>
         </div>
         <div className="flex flex-col justify-center">
           <Circle ref={MapdRef} className="size-16" label="MapD Platform">
@@ -232,7 +238,7 @@ const Beaming = () => {
         </div>
         <div className="flex flex-col justify-center">
           <Circle ref={UserRef} className="size-16" label="You">
-            <FaUser size={75} className="text-black"/>
+            <FaUsers size={75} className="text-black"/>
           </Circle>
         </div>
       </div>
