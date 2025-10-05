@@ -2,7 +2,7 @@ import { Button } from "./button"
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-background/20 backdrop-blur-md shadow-md border border-b">
       <div className="mx-auto flex  items-center justify-between">
         {/* Left - Logo/Brand (optional space) */}
         <div className="flex-1" />
