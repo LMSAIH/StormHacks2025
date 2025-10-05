@@ -74,11 +74,11 @@ const Hero = () => {
           </div>
 
           {/* Main Heading */}
-          <H1 className="mb-6 bg-gradient-to-br from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent">
+          <H1 className="mb-6 text-white drop-shadow-[0_18px_40px_rgba(15,23,42,0.6)]">
             Understand how
             <br />
             <span className="text-[#64B5F6]">
-              development projects <span className="font-blue-800">impact</span> communities
+              development projects <span className="font-bold">impact</span> communities
             </span>
           </H1>
 
@@ -92,10 +92,9 @@ const Hero = () => {
             <Button
               asChild
               size="lg"
-              className="group relative overflow-hidden rounded-full bg-white px-8 py-6 text-base font-semibold text-primary-foreground transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_30px_70px_-28px_rgba(100,181,246,0.85)]"
+              className="group relative overflow-hidden rounded-full px-8 py-6 text-base font-semibold text-black shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_30px_70px_-28px_rgba(100,181,246,0.85)]"
             >
               <span className="relative z-10 tracking-wide">Start Analyzing</span>
-              <div className="absolute inset-[-60%] -z-10 rotate-12 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Button>
             
             <Button
