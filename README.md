@@ -1,5 +1,17 @@
 # MapD - Urban Development Impact Analysis Platform
 
+## Awards
+
+**StormHacks 2025 Winner**
+
+- **Overall Winner**
+- **Best Design**
+- **2nd Place - United Nations Sustainable Development Goals Enactus Challenge**
+
+---
+
+## Overview Impact Analysis Platform
+
 <div align="center">
   <img src="./frontend/public/mapd.svg" alt="MapD Logo" width="200"/>
   
@@ -13,23 +25,33 @@
 
 ---
 
-## 🌟 Overview
+## � Awards
+
+**StormHacks 2025 Winner** 
+
+- **Overall Winner**
+- **Best Design**
+- **2nd Place - United Nations Sustainable Development Goals Enactus Challenge**
+
+---
+
+## Overview
 
 **MapD** is an intelligent urban planning platform that leverages AI to analyze and visualize the impact of development projects on surrounding infrastructure and communities. Built for the City of Vancouver, MapD helps city planners, developers, and citizens understand how new construction projects affect schools, parks, transit, and other vital community amenities.
 
 ### Key Features
 
-- 🗺️ **Interactive Map Visualization** - Explore development permits across Vancouver with real-time geospatial data
-- 🤖 **AI-Powered Impact Analysis** - OpenAI-driven assessments of how developments affect nearby infrastructure
-- 📊 **Comprehensive Infrastructure Data** - Tracks 9 categories: parks, schools, transit, libraries, cultural spaces, fire halls, and more
-- 📈 **Quantitative Impact Scoring** - Multi-factor analysis with scores from -10 to +10 for each affected amenity
-- 🔍 **Advanced Filtering & Search** - Find permits by location, value, property use, and proximity
-- 💾 **Distributed Caching** - Cloudflare Workers edge caching for optimal global performance
-- 🎨 **Beautiful UI** - Modern, responsive interface with Mapbox GL, TailwindCSS, and shadcn/ui
+- **Interactive Map Visualization** - Explore development permits across Vancouver with real-time geospatial data
+- **AI-Powered Impact Analysis** - OpenAI-driven assessments of how developments affect nearby infrastructure
+- **Comprehensive Infrastructure Data** - Tracks 9 categories: parks, schools, transit, libraries, cultural spaces, fire halls, and more
+- **Quantitative Impact Scoring** - Multi-factor analysis with scores from -10 to +10 for each affected amenity
+- **Advanced Filtering & Search** - Find permits by location, value, property use, and proximity
+- **Distributed Caching** - Cloudflare Workers edge caching for optimal global performance
+- **Beautiful UI** - Modern, responsive interface with Mapbox GL, TailwindCSS, and shadcn/ui
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project consists of three main components:
 
@@ -65,7 +87,7 @@ The project consists of three main components:
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 StormHacks2025/
@@ -98,7 +120,7 @@ StormHacks2025/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -126,7 +148,7 @@ VITE_API_BASE_URL=http://localhost:8000
 
 ### Installation & Running
 
-#### 1️⃣ Backend Setup
+#### 1. Backend Setup
 
 ```bash
 cd backend
@@ -153,7 +175,7 @@ cd backend
 docker-compose up --build
 ```
 
-#### 2️⃣ Frontend Setup
+#### 2. Frontend Setup
 
 ```bash
 cd frontend
@@ -167,7 +189,7 @@ npm run dev
 
 Access the app at `http://localhost:5173`
 
-#### 3️⃣ Cloudflare Worker (Optional)
+#### 3. Cloudflare Worker (Optional)
 
 ```bash
 cd cloudflare-worker/throbbing-rain-c8ee
@@ -184,7 +206,7 @@ npm run deploy
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Core Endpoints
 
@@ -207,7 +229,7 @@ npm run deploy
 
 ---
 
-## 🎯 Features in Detail
+## Features in Detail
 
 ### 1. Interactive Map Visualization
 - **Mapbox GL JS** integration with custom markers
@@ -251,7 +273,7 @@ npm run deploy
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Collections
 
@@ -277,41 +299,44 @@ npm run deploy
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Areas for improvement:
 
-- 🧪 Add unit and integration tests
-- 🎨 Enhance UI/UX with more visualizations
-- 📊 Add historical trend analysis
-- 🔔 Implement real-time notifications for new permits
-- 🌐 Multi-language support
-- 📱 Mobile app version
-- 🔐 User authentication and saved searches
+- Add unit and integration tests
+- Enhance UI/UX with more visualizations
+- Add historical trend analysis
+- Implement real-time notifications for new permits
+- Multi-language support
+- Mobile app version
+- User authentication and saved searches
 
 ---
 
-## 🏆 Hackathon Tracks
+## StormHacks 2025 Achievement
 
-This project was built for **StormHacks 2025** and applies for:
+This project was our submission to **SFU Surge's StormHacks 2025**, where we won:
 
-- ✅ **Most Likely to Become a Startup** - Real market need for urban planning tools
-- ✅ **United Nations Sustainable Development Goals Enactus Challenge** - Supports sustainable cities (SDG 11)
-- ✅ **BluePrint Social Good Track** - Improves community engagement in urban development
-- ✅ **SEE Sustainable Engineering Track** - Promotes efficient resource planning and sustainable urban growth
-- ✅ **IEEE SFU Prize Track** - Advanced technical implementation with AI and geospatial data
-- ✅ **Best Design** - Polished UI with excellent UX
-- ✅ **[MLH] Best Use of .TECH** - Modern web platform showcasing technical innovation in urban development
+- **Overall Winner** - Top project across all categories
+- **Best Design** - Polished UI with excellent UX, powered by Mapbox GL, TailwindCSS, and shadcn/ui
+- **2nd Place - United Nations Sustainable Development Goals Enactus Challenge** - Supporting sustainable cities (SDG 11) through improved urban planning and community engagement
+
+### Competition Tracks Applied
+- **Most Likely to Become a Startup** - Real market need for urban planning tools
+- **BluePrint Social Good Track** - Improves community engagement in urban development
+- **SEE Sustainable Engineering Track** - Promotes efficient resource planning and sustainable urban growth
+- **IEEE SFU Prize Track** - Advanced technical implementation with AI and geospatial data
+- **[MLH] Best Use of .TECH** - Modern web platform showcasing technical innovation in urban development
 
 ---
 
-## 👥 Team
+## Team
 
 Built with ❤️ by *404 Rizz Not Found* Team at StormHacks 2025
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **City of Vancouver** for providing comprehensive open data
 - **OpenAI** for GPT-4 API
