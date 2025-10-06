@@ -1,17 +1,4 @@
 # MapD - Urban Development Impact Analysis Platform
-
-## Awards
-
-**StormHacks 2025 Winner**
-
-- **Overall Winner**
-- **Best Design**
-- **2nd Place - United Nations Sustainable Development Goals Enactus Challenge**
-
----
-
-## Overview Impact Analysis Platform
-
 <div align="center">
   <img src="./frontend/public/mapd.svg" alt="MapD Logo" width="200"/>
   
