@@ -12,7 +12,7 @@
 
 ---
 
-## � Awards
+## Awards
 
 **StormHacks 2025 Winner** 
 
