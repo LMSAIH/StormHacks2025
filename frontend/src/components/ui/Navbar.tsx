@@ -15,42 +15,42 @@ const Navbar = () => {
   }, [])
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all ${
+    <nav className={`fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-3 sm:py-4 transition-all ${
       isScrolled 
         ? "bg-background/20 backdrop-blur-md shadow-md border border-b" 
         : "bg-transparent"
     }`}>
-      <div className="mx-auto flex  items-center justify-between">
-        {/* Left - Logo/Brand (optional space) */}
-        <div className="flex-1" />
+      <div className="mx-auto flex items-center justify-between max-w-7xl">
+        {/* Left - Logo/Brand (optional space on desktop, hidden on mobile) */}
+        <div className="hidden sm:flex flex-1" />
 
         {/* Center - Navigation Links */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-3 sm:gap-8 flex-1 sm:flex-initial justify-start sm:justify-center">
           <a
             href="#platform"
-            className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            className="relative text-xs sm:text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Platform
           </a>
           <a
             href="#solutions"
-            className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            className="relative text-xs sm:text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Solutions
           </a>
           <a
             href="#impact"
-            className="relative text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            className="relative text-xs sm:text-sm font-medium text-foreground/80 transition-all hover:text-foreground font-['Roboto_Mono',monospace] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             Impact
           </a>
         </div>
 
         {/* Right - Login & CTA */}
-        <div className="flex flex-1 items-center justify-end gap-4">
+        <div className="flex flex-1 items-center justify-end gap-2 sm:gap-4">
             <Button
             size="sm"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 hover:shadow-lg text-xs sm:text-sm px-3 sm:px-4"
             asChild
             >
             <Link to="/visualization">Go to App</Link>
