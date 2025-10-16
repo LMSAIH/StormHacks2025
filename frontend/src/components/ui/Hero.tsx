@@ -8,7 +8,7 @@ const DottedMap = lazy(() => import("./dotted-map").then(module => ({ default: m
 
 const Hero = () => {
   return (
-    <section id="platform" className="relative min-h-screen w-full overflow-hidden group">
+    <section id="platform" className="relative w-full overflow-hidden group">
       {/* Single Beautiful Dotted Map with Global Markers */}
       <div className="absolute inset-0">
           <div className="animate-fade-in-dots">
@@ -17,7 +17,7 @@ const Hero = () => {
               height={140}
               mapSamples={3000}
               dotRadius={0.40}
-              className="text-foreground/20 group-hover:text-foreground/60 transition-colors duration-700"
+              className="text-foreground/20 group-hover:text-foreground/60 transition-colors duration-700 scale-200 sm:scale-100"
         />
           </div>
       </div>
@@ -25,11 +25,14 @@ const Hero = () => {
       {/* Radial gradient for spotlight effect */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,transparent_100%)] transition-all duration-700 group-hover:bg-[radial-gradient(ellipse_at_center,transparent_30%,transparent_100%)]" />
 
+      {/* Faded gradient background at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-primary/10 via-accent/10 to-transparent pointer-events-none" />
+
       {/* Content Container */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-20 sm:px-6 lg:px-8">
+      <div className="relative z-10 flex items-center justify-center px-4 pt-30 pb-10 sm:pb-30 sm:px-6 lg:px-8">
         <div className="mx-auto text-center max-w-3xl">
           {/* Badge or Tag */}
-          <div className="mb-6 inline-flex items-center rounded-full border border-border bg-muted/50 px-4 py-1.5 backdrop-blur-sm">
+          <div className="mb-4 inline-flex items-center rounded-full border border-border bg-muted/50 px-3 py-1 backdrop-blur-sm">
             <P className="text-xs font-medium text-muted-foreground sm:text-sm">
             Powered by Public Data
             </P>
@@ -45,15 +48,15 @@ const Hero = () => {
           </H1>
 
           {/* Lead Paragraph */}
-          <Lead className="mx-auto mb-10 max-w-xl text-muted-foreground border-2 bg-background/50 rounded-lg backdrop-blur-sm" >
+          <Lead className="mx-auto mb-10 max-w-xl text-neutral-100" >
             We analyze public data to reveal the real impact of development projects on neighborhoods and communities.
           </Lead>
 
           {/* Call-to-Action Buttons */}
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="flex flex-row items-center justify-center gap-4 ">
             <Button
               size="lg"
-              className="group relative overflow-hidden bg-primary px-8 py-6 text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20"
+              className="group relative overflow-hidden bg-primary px-6 py-4 sm:px-8 sm:py-6 text-sm sm:text-base font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:shadow-primary/20"
               asChild
             >
               <Link to="/Visualization">
@@ -65,28 +68,13 @@ const Hero = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-2 bg-background/50 px-8 py-6 text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
+              className="border-2 bg-background/50 px-6 py-4 sm:px-8 sm:py-6 text-sm sm:text-base font-semibold backdrop-blur-sm transition-all hover:bg-accent/10"
               asChild
             >
               <Link to="#solutions">Learn More</Link>
             </Button>
           </div>
 
-          {/* Additional Info */}
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-primary" />
-              <P className="text-xs sm:text-sm">Real-time Data</P>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-accent" />
-              <P className="text-xs sm:text-sm">Clear Insights</P>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-chart-1" />
-              <P className="text-xs sm:text-sm">Community First</P>
-            </div>
-          </div>
         </div>
       </div>
 
