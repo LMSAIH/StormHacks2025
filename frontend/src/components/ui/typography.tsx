@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { TextAnimate } from "./text-animate"
 
 interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode
@@ -199,5 +200,39 @@ export function Code({ className, children, ...props }: TypographyProps) {
     >
       {children}
     </code>
+  )
+}
+
+// Animated paragraph component using TextAnimate
+interface PAnimatedProps {
+  children: string
+  className?: string
+  animation?: "fadeIn" | "blurIn" | "blurInUp" | "slideUp" | "slideDown"
+  delay?: number
+  duration?: number
+}
+
+export function PAnimated({ 
+  className, 
+  children, 
+  animation = "blurInUp",
+  delay = 0,
+  duration = 0,
+}: PAnimatedProps) {
+  return (
+    <TextAnimate
+      as="p"
+      animation={animation}
+      by="word"
+      delay={delay}
+      duration={duration}
+      className={cn(
+        "leading-7 font-['Roboto_Mono',monospace] text-foreground",
+        "text-base font-normal",
+        className
+      )}
+    >
+      {children}
+    </TextAnimate>
   )
 }
