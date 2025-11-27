@@ -10,12 +10,41 @@
  *
  * Learn more at https://developers.cloudflare.com/workers/
  */
+interface Env{
+	MAPD_RATE_LIMIT: RateLimit,
+}
 
 export default {
-	async fetch(request: Request, _env: unknown, ctx: ExecutionContext): Promise<Response> {
+	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
 		// Update this to your Cloudflare Tunnel URL
 		const BACKEND_URL = 'https://api.mapd.tech';  // or https://TUNNEL_ID.cfargotunnel.com
+		
+		// Apply rate limiting based on client IP
+		const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
+		const rateLimitKey = `rate-limit:${clientIP}`;
+		
+		try {
+			const { success } = await env.MAPD_RATE_LIMIT.limit({ key: rateLimitKey });
+			
+			if (!success) {
+				return new Response(JSON.stringify({ 
+					error: 'Rate limit exceeded',
+					message: 'Too many requests. Please try again later.',
+					limit: '10 requests per minute'
+				}), {
+					status: 429,
+					headers: {
+						'Content-Type': 'application/json',
+						'Access-Control-Allow-Origin': '*',
+						'Retry-After': '60',
+					}
+				});
+			}
+		} catch (error) {
+			console.error('Rate limiting error:', error);
+			// Continue processing even if rate limiting fails
+		}
 		
 		// Handle CORS preflight requests
 		if (request.method === 'OPTIONS') {

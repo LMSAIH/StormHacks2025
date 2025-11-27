@@ -9,7 +9,18 @@
 	"compatibility_date": "2025-09-24",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"ratelimits": [
+		{
+			"name": "MAPD_RATE_LIMIT",
+			"namespace_id": "1001",
+			"simple": {
+				"limit": 10,
+				"period": 60
+			}
+		}
+	]
+	
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
